@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+"""Mix speech audio and background music into the final AI Radio radio show.
+
+Usage:
+    python mix_audio.py --workspace ./workspace
+
+Requires:
+    pip install pydub
+    ffmpeg (system)
+
+Output:
+    {workspace}/audio/final/ai_radio.wav
+    {workspace}/audio/final/ai_radio.mp3
+"""
+
+import argparse
+import os
+from pydub import AudioSegment
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Mix AI Radio audio")
+    parser.add_argument("--workspace", default="workspace", help="Workspace directory")
+    args = parser.parse_args()
+
+    speech_path = os.path.join(args.workspace, "audio", "speech", "speech.wav")
+    music_path = os.path.join(args.workspace, "audio", "music", "background.mp3")
+    output_dir = os.path.join(args.workspace, "audio", "final")
+    os.makedirs(output_dir, exist_ok=True)
+
+    print("=== AI Radio: Audio Mixing ===\n")
+
+    # Load speech
+    print("Loading speech audio...")
+    speech = AudioSegment.from_wav(speech_path)
+    print(f"Speech duration: {len(speech) / 1000:.1f}s")
+
+    has_music = os.path.exists(music_path)
+
+    if has_music:
+        print("Loading background music...")
+        music = AudioSegment.from_mp3(music_path)
+
+        # Intro music (15s)
+        intro_music = music[:15000]
+        intro_music = intro_music - 15
+        intro_music = intro_music.fade_in(1000).fade_out(3000)
+
+        # Outro music (15s)
+        outro_music = music[:15000]
+        outro_music = outro_music - 15
+        outro_music = outro_music.fade_in(3000).fade_out(1000)
+
+        # Overlay speech on music
+        print("Mixing speech + music (intro and outro)...")
+        combined = speech.overlay(intro_music, position=0)
+        
+        outro_position = len(speech) - 15000
+        if outro_position < 0:
+            outro_position = 0
+        combined = combined.overlay(outro_music, position=outro_position)
+    else:
+        print("No background music — speech-only output.")
+        combined = speech
+
+    # Overall fades
+    combined = combined.fade_in(500).fade_out(2000)
+
+    # Export WAV
+    wav_path = os.path.join(output_dir, "ai_radio.wav")
+    combined.export(wav_path, format="wav")
+    print(f"Saved WAV: {wav_path}")
+
+    # Export MP3
+    try:
+        mp3_path = os.path.join(output_dir, "ai_radio.mp3")
+        combined.export(mp3_path, format="mp3", bitrate="192k")
+        print(f"Saved MP3: {mp3_path}")
+    except Exception as e:
+        print(f"MP3 export failed: {e}")
+        mp3_path = None
+
+    # Stats
+    wav_mb = os.path.getsize(wav_path) / (1024 * 1024)
+    print(f"\n  WAV: {wav_mb:.1f} MB")
+    if mp3_path and os.path.exists(mp3_path):
+        mp3_mb = os.path.getsize(mp3_path) / (1024 * 1024)
+        print(f"  MP3: {mp3_mb:.1f} MB")
+    print(f"  Duration: {len(combined) / 1000:.1f}s")
+    print(f"\n✅ AI Radio mixed successfully!")
+
+
+if __name__ == "__main__":
+    main()

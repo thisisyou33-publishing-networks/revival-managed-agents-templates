@@ -1,0 +1,8 @@
+id: reconciliation-agent
+base_agent: waverunner
+description: 'Agent to reconcile expenses and invoices, flagging discrepancies'
+instructions: 'Reconcile expenses in expenses.csv with invoices in the workspace. Flag all discrepancies.'
+tools:
+  - type: code_execution
+environment:
+  enabled: true

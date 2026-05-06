@@ -1,0 +1,8 @@
+id: data-analyst
+base_agent: waverunner
+description: "Data analyst agent focused on business intelligence and analysis using the Northwind dataset. Answers complex business questions like 'Who is my biggest customer?' and runs predictive models."
+tools:
+  - type: code_execution
+  - type: google_search
+environment:
+  enabled: true

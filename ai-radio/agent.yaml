@@ -1,0 +1,8 @@
+id: ai-radio
+base_agent: waverunner
+description: "Agent that turns any content source into a radio show — with a host, callers from around the world, generated speech with telephone effects, background music, and a polished final audio file."
+tools:
+  - type: google_search
+  - type: code_execution
+environment:
+  enabled: true
