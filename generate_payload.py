@@ -85,8 +85,10 @@ def make_payload():
     add_files('skills')
     add_files('workspace')
 
+    prompt = sys.argv[1] if len(sys.argv) > 1 else "Hello"
+    
     payload = {
-        "input": "Hello",
+        "input": prompt,
         "environment": {
             "config": {
                 "sources": sources

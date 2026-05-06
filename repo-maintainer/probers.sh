@@ -5,14 +5,14 @@ if [ -z "$GEMINI_API_KEY" ]; then
 fi
 
 # Generate payload
-python3 ../generate_payload.py > probers.json
+python3 ../generate_payload.py "Check the repository https://github.com/googleapis/python-genai and identify any open issues related to documentation." > probers.json
 
-# Send request
+# Send request (saving output to prober_output.log)
 curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
   -H "Content-Type: application/json" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
   -H "x-server-timeout: 600" \
-  -d @probers.json
+  -d @probers.json > prober_output.log
 
 # Clean up
 rm probers.json
