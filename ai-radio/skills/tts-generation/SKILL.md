@@ -74,49 +74,12 @@ Voices are assigned **dynamically** based on `[Male]` / `[Female]` gender tags i
 
 Voices cycle round-robin if there are more callers than available voices. Accent tags (`[Accent: Irish]`, etc.) are injected into the TTS prompt to influence pronunciation.
 
-## Available Voices
-
-The following voices are available for the TTS API:
-
-| Voice | Gender | Description |
-| :--- | :--- | :--- |
-| Achernar | Female | Soft |
-| Achird | Male | Friendly |
-| Algenib | Male | Gravelly |
-| Algieba | Male | Smooth |
-| Alnilam | Male | Firm |
-| Aoede | Female | Breezy |
-| Autonoe | Female | Bright |
-| Callirrhoe | Female | Easy-going |
-| Charon | Male | Informative |
-| Despina | Female | Smooth |
-| Enceladus | Male | Breathy |
-| Erinome | Female | Clear |
-| Fenrir | Male | Excitable |
-| Gacrux | Female | Mature |
-| Iapetus | Male | Clear |
-| Kore | Female | Firm |
-| Laomedeia | Female | Upbeat |
-| Leda | Female | Youthful |
-| Orus | Male | Firm |
-| Pulcherrima | Female | Forward |
-| Puck | Male | Upbeat |
-| Rasalgethi | Male | Informative |
-| Sadachbia | Male | Lively |
-| Sadaltager | Male | Knowledgeable |
-| Schedar | Male | Even |
-| Sulafat | Female | Warm |
-| Umbriel | Male | Easy-going |
-| Vindemiatrix | Female | Gentle |
-| Zephyr | Female | Bright |
-| Zubenelgenubi | Male | Casual |
-
 ## Telephone Filter
 
 Applied via ffmpeg to correspondent audio segments:
 
 ```
-highpass=f=300, lowpass=f=3400, acompressor, volume=0.95
+highpass=f=300, lowpass=f=3400, acompressor, volume=1.5
 ```
 
 This simulates the standard telephone bandwidth (300Hz–3.4kHz) and adds compression to mimic phone codec dynamics.

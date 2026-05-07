@@ -125,7 +125,7 @@ def apply_telephone_filter(input_path, output_path, boost=False):
     3. Compression — mimics phone codec dynamics
     4. Volume adjustment (boosted if requested)
     """
-    vol = "1.2" if boost else "1.1"
+    vol = "1.8" if boost else "1.5"
     subprocess.run([
         "ffmpeg", "-y",
         "-loglevel", "warning",
