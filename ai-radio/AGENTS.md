@@ -30,6 +30,7 @@ Upon execution, you should:
 4. **Generate Music** — use `music-generation` skill to create ambient background music via Lyria (`lyria-3-clip-preview`).
 5. **Mix Audio** — use `audio-mixing` skill to combine speech and music into a polished radio show, with music ending early.
 6. **Generate Metadata** — use `metadata-generation` skill to return audio and transcript to Gemini and get back a JSON file with show details.
+7. **Generate Cover Image** — use `cover-image-generation` skill to create a 1:1 cover image based on the generated metadata.
 
 ## Architecture
 
@@ -45,8 +46,10 @@ User prompt
   │       → {workspace}/audio/music/background.mp3
   ├── 5. python skills/audio-mixing/scripts/mix_audio.py --workspace ./workspace
   │       → {workspace}/audio/final/ai_radio.wav + ai_radio.mp3
-  └── 6. python skills/metadata-generation/scripts/generate_metadata.py --workspace ./workspace
-          → {workspace}/data/show_notes.json
+  ├── 6. python skills/metadata-generation/scripts/generate_metadata.py --workspace ./workspace
+  │       → {workspace}/data/show_notes.json
+  └── 7. python skills/cover-image-generation/scripts/generate_image.py --workspace ./workspace --metadata ./workspace/data/show_notes.json
+          → {workspace}/images/cover.png
 ```
 
 ### Default Presets
@@ -82,6 +85,7 @@ Each skill lives in `skills/<name>/` with a `SKILL.md` and a `scripts/` director
 | `music-generation` | `generate_music.py` | Lyria ambient music |
 | `audio-mixing` | `mix_audio.py` | Mix speech + music with fades |
 | `metadata-generation` | `generate_metadata.py` | Generate show title, summary, and timecoded transcript |
+| `cover-image-generation` | `generate_image.py` | Generate cover image based on metadata |
 
 ## Execution Order
 
@@ -93,6 +97,7 @@ Run strictly in order:
 4. `music-generation` → `audio/music/background.mp3`
 5. `audio-mixing` → `audio/final/ai_radio.wav` + `ai_radio.mp3`
 6. `metadata-generation` → `data/show_notes.json`
+7. `cover-image-generation` → `images/cover.png`
 
 ## Content Rules
 
@@ -129,6 +134,7 @@ Stick to: **technology, software, programming, open source, AI/ML, science, engi
 | Background music | `./workspace/audio/music/background.mp3` |
 | Final output | `./workspace/audio/final/ai_radio.wav` + `ai_radio.mp3` |
 | Metadata | `./workspace/data/show_notes.json` |
+| Cover Image | `./workspace/images/cover.png` |
 
 ## Edge Cases
 
