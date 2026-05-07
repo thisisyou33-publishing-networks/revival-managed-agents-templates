@@ -22,11 +22,12 @@ python skills/audio-mixing/scripts/mix_audio.py --workspace ./workspace
 ### What it does
 
 1. Loads speech from `{workspace}/audio/speech/speech.wav`.
-2. Loads background music from `{workspace}/audio/music/background.mp3` (if exists).
-3. Loops music to match speech duration, lowers volume to -18dB.
-4. Overlays speech on music with a 1-second music intro.
-5. Adds fade-in/fade-out.
-6. Exports as WAV and MP3.
+2. Adds 3 seconds of silence padding to the end of the speech to prevent it from being faded out.
+3. Loads background music from `{workspace}/audio/music/background.mp3` (if exists).
+4. Loops music to match speech duration, lowers volume to -18dB.
+5. Overlays speech on music with a 1-second music intro.
+6. Adds fade-in/fade-out.
+7. Exports as WAV and MP3.
 
 ### Dependencies
 

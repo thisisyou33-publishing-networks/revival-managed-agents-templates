@@ -48,6 +48,12 @@ def main():
     speech = AudioSegment.from_wav(speech_path)
     print(f"Speech duration: {len(speech) / 1000:.1f}s")
 
+    # Add padding to speech (3 seconds of silence)
+    print("Adding padding to speech...")
+    padding = AudioSegment.silent(duration=3000)
+    speech = speech + padding
+    print(f"Speech duration after padding: {len(speech) / 1000:.1f}s")
+
     has_music = os.path.exists(music_path)
 
     if has_music:

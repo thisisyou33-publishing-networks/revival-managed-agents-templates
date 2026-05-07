@@ -14,15 +14,7 @@ All work is performed in the `./workspace` directory. All paths are relative to 
    ```
 2. Install required libraries:
    ```bash
-   pip install google-genai pydub
-   ```
-3. Install `ffmpeg` (required for telephone filter and audio mixing) via static build. Do NOT use `apt-get`:
-   ```bash
-   mkdir -p ./workspace/bin
-   wget https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-amd64-static.tar.xz -O ./workspace/bin/ffmpeg.tar.xz
-   tar -xf ./workspace/bin/ffmpeg.tar.xz -C ./workspace/bin --strip-components=1
-   rm ./workspace/bin/ffmpeg.tar.xz
-   export PATH=./workspace/bin:$PATH
+   pip install pydub
    ```
 
 ## Workflow
@@ -37,6 +29,8 @@ Upon execution, you should:
 3. **Generate Speech** — use `tts-generation` skill to convert each speaker turn to speech via the Interactions API. 
 4. **Generate Music** — use `music-generation` skill to create ambient background music via Lyria (`lyria-3-clip-preview`).
 5. **Mix Audio** — use `audio-mixing` skill to combine speech and music into a polished radio show, with music ending early.
+6. **Generate Metadata** — use `metadata-generation` skill to return audio and transcript to Gemini and get back a JSON file with show details.
+7. **Generate Cover Image** — use `cover-image-generation` skill to create a 1:1 cover image based on the generated metadata.
 
 ## Architecture
 
@@ -50,8 +44,12 @@ User prompt
   │       → {workspace}/audio/speech/speech.wav
   ├── 4. python skills/music-generation/scripts/generate_music.py --workspace ./workspace --mood <mood>
   │       → {workspace}/audio/music/background.mp3
-  └── 5. python skills/audio-mixing/scripts/mix_audio.py --workspace ./workspace
-          → {workspace}/audio/final/ai_radio.wav + ai_radio.mp3
+  ├── 5. python skills/audio-mixing/scripts/mix_audio.py --workspace ./workspace
+  │       → {workspace}/audio/final/ai_radio.wav + ai_radio.mp3
+  ├── 6. python skills/metadata-generation/scripts/generate_metadata.py --workspace ./workspace
+  │       → {workspace}/data/show_notes.json
+  └── 7. python skills/cover-image-generation/scripts/generate_image.py --workspace ./workspace --metadata ./workspace/data/show_notes.json
+          → {workspace}/images/cover.png
 ```
 
 ### Default Presets
@@ -86,6 +84,8 @@ Each skill lives in `skills/<name>/` with a `SKILL.md` and a `scripts/` director
 | `tts-generation` | `generate_tts.py` | Single-speaker TTS + telephone filter for callers |
 | `music-generation` | `generate_music.py` | Lyria ambient music |
 | `audio-mixing` | `mix_audio.py` | Mix speech + music with fades |
+| `metadata-generation` | `generate_metadata.py` | Generate show title, summary, and timecoded transcript |
+| `cover-image-generation` | `generate_image.py` | Generate cover image based on metadata |
 
 ## Execution Order
 
@@ -96,6 +96,8 @@ Run strictly in order:
 3. `tts-generation` → `audio/speech/speech.wav`
 4. `music-generation` → `audio/music/background.mp3`
 5. `audio-mixing` → `audio/final/ai_radio.wav` + `ai_radio.mp3`
+6. `metadata-generation` → `data/show_notes.json`
+7. `cover-image-generation` → `images/cover.png`
 
 ## Content Rules
 
@@ -131,6 +133,8 @@ Stick to: **technology, software, programming, open source, AI/ML, science, engi
 | Speech (combined) | `./workspace/audio/speech/speech.wav` |
 | Background music | `./workspace/audio/music/background.mp3` |
 | Final output | `./workspace/audio/final/ai_radio.wav` + `ai_radio.mp3` |
+| Metadata | `./workspace/data/show_notes.json` |
+| Cover Image | `./workspace/images/cover.png` |
 
 ## Edge Cases
 

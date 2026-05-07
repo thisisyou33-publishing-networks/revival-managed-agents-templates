@@ -50,8 +50,11 @@ Write a ~3-minute radio script based on the research provided. The show has:
 - No stage directions outside of the audio tags in the transcript.
 - Keep sentences short and punchy — this is spoken word.
 - Target ~450-500 words total.
-- Start with "# AI Radio — [today's date]" as the title.
 - DO NOT fabricate any facts. Only use information from the research provided.
+- Time of Day: Do NOT assume the time of day (avoid "Good morning", "Good evening", etc.).
+- No Songs: The radio show does NOT play songs. Do not include lines about playing music tracks or songs.
+- No Ad Breaks: Do NOT include ad breaks or say "stay tuned" for more.
+- Clean Wrap Up: Do a clean wrap up at the end of the show without promising future segments.
 - The research may come from any source (news, blogs, GitHub, papers, forums). Adapt your script to fit whatever content is provided.
 
 **CONTENT SAFETY — strictly off-limits:**
@@ -125,6 +128,12 @@ def main():
         choices=VALID_STYLES,
         help=f"Show format: {', '.join(VALID_STYLES)}",
     )
+    parser.add_argument(
+        "--duration",
+        type=int,
+        default=3,
+        help="Target duration in minutes",
+    )
     args = parser.parse_args()
 
     client = genai.Client()
@@ -142,7 +151,21 @@ def main():
         return
 
     # Build system prompt = base + style
-    system_prompt = BASE_PROMPT + STYLE_PROMPTS[args.style]
+    target_words = args.duration * 125
+    modified_base_prompt = BASE_PROMPT.replace(
+        "Write a ~3-minute radio script",
+        f"Write a ~{args.duration}-minute radio script"
+    ).replace(
+        "- Target ~450-500 words total.",
+        f"- Target ~{target_words} words total."
+    )
+    
+    # Make style prompt durations dynamic
+    main_seg_min = (args.duration * 60 - 40) / 60
+    main_seg_str = f"{main_seg_min:.1f} min"
+    style_prompt = STYLE_PROMPTS[args.style].replace("2.5 min", main_seg_str)
+    
+    system_prompt = modified_base_prompt + style_prompt
 
     print(f"=== AI Radio: Script Generation ===\n")
     print(f"Style: {args.style}")

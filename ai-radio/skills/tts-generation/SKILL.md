@@ -18,15 +18,17 @@ python skills/tts-generation/scripts/generate_tts.py --workspace ./workspace
 | Argument | Default | Description |
 |----------|---------|-------------|
 | `--workspace` | `workspace` | Root workspace directory |
+| `--workers` | `8` | Max parallel TTS worker threads |
 
 ### What it does
 
 1. Reads the script from `{workspace}/data/script.md`.
-2. Parses it into individual `(speaker, text)` turns.
-3. For each turn, calls the **Interactions API** with single-speaker TTS.
-4. Applies an ffmpeg telephone bandpass filter (300Hz–3.4kHz) to correspondent voices.
-5. Keeps the host (Jordan) audio clean and unfiltered.
-6. Concatenates all segments into a single WAV.
+2. Parses it into individual `(speaker, text)` turns and assigns voices.
+3. Generates TTS for all turns **in parallel** using a thread pool (default 8 workers).
+4. **Retries** each failed turn up to 3 times with exponential backoff.
+5. Applies an ffmpeg telephone bandpass filter (300Hz–3.4kHz) to correspondent voices.
+6. Keeps the host (Jordan) audio clean and unfiltered.
+7. Concatenates all segments in original script order into a single WAV.
 
 ### Dependencies
 
@@ -77,7 +79,7 @@ Voices cycle round-robin if there are more callers than available voices. Accent
 Applied via ffmpeg to correspondent audio segments:
 
 ```
-highpass=f=300, lowpass=f=3400, acompressor, volume=0.95
+highpass=f=300, lowpass=f=3400, acompressor, volume=1.5
 ```
 
 This simulates the standard telephone bandwidth (300Hz–3.4kHz) and adds compression to mimic phone codec dynamics.

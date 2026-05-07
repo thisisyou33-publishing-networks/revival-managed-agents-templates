@@ -50,4 +50,6 @@ python skills/music-generation/scripts/generate_music.py --workspace ./workspace
 
 ## Fallback
 
-Lyria is experimental. If generation fails, the pipeline proceeds without background music — the audio-mixing step handles this gracefully.
+Lyria is experimental. If generation fails with a policy error or returns no music, the script will attempt to retry once with a simpler fallback prompt: `"Create a 30-second simple ambient background track. Instrumental only, calm and neutral."`
+
+If the fallback attempt also fails, the pipeline proceeds without background music — the audio-mixing step handles this gracefully.
