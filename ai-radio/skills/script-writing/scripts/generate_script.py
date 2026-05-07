@@ -112,6 +112,12 @@ def main():
         choices=VALID_STYLES,
         help=f"Show format: {', '.join(VALID_STYLES)}",
     )
+    parser.add_argument(
+        "--duration",
+        type=int,
+        default=3,
+        help="Target duration in minutes",
+    )
     args = parser.parse_args()
 
     client = genai.Client()
@@ -129,7 +135,21 @@ def main():
         return
 
     # Build system prompt = base + style
-    system_prompt = BASE_PROMPT + STYLE_PROMPTS[args.style]
+    target_words = args.duration * 125
+    modified_base_prompt = BASE_PROMPT.replace(
+        "Write a ~3-minute radio script",
+        f"Write a ~{args.duration}-minute radio script"
+    ).replace(
+        "- Target ~450-500 words total.",
+        f"- Target ~{target_words} words total."
+    )
+    
+    # Make style prompt durations dynamic
+    main_seg_min = (args.duration * 60 - 40) / 60
+    main_seg_str = f"{main_seg_min:.1f} min"
+    style_prompt = STYLE_PROMPTS[args.style].replace("2.5 min", main_seg_str)
+    
+    system_prompt = modified_base_prompt + style_prompt
 
     print(f"=== AI Radio: Script Generation ===\n")
     print(f"Style: {args.style}")
