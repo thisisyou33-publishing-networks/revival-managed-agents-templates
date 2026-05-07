@@ -32,12 +32,9 @@ This skill generates an appropriate cover image for the radio show based on a pr
 
 ## Prompting rules
 
-When generating the prompt for the `cover-image-generation` skill, ensure it follows this style (inspired by professional radio/podcast covers):
+This skill uses a set of predefined prompt templates and selects one at random to generate cover images. It dynamically inserts the show title into the selected template.
 
-- **Show Title**: Must include the title of the show as text with a stylish, bold font.
-- **Subject**: Do NOT include any humans, DJs, or hosts in the image. Focus on abstract art, technology, or thematic elements related to the show.
-- **Background**: Must be a textured and interesting background (e.g., halftone dots, abstract geometry, water ripples).
-- **Example Prompt**: `"A professional podcast cover image for a show titled 'AI Radio'. The design features the text 'AI Radio' in a bold, stylish white font centered on the cover. The background is a vibrant purple with a textured water ripple effect that covers the entire frame, creating a dynamic and clean aesthetic."`
+- **Example Prompt**: `"A professional podcast cover image for a show titled 'AI Radio' on the 'AI Radio' station. The design features the text 'AI Radio' in a bold, stylish white font centered on the cover. The background is a vibrant purple with a textured water ripple effect that covers the entire frame, creating a dynamic and clean aesthetic."`
 
 ## Forbidden themes
 

@@ -17,8 +17,28 @@ import sys
 import warnings
 from google import genai
 
+import random
+
 # Suppress experimental warnings from SDK
 warnings.filterwarnings("ignore", message="Interactions usage is experimental")
+
+BASE_PROMPT = "A professional podcast cover image for a show titled '{title}' on the 'AI Radio' station. The design features the text '{title}' in a bold, stylish font"
+
+PROMPT_STYLES = [
+    " centered on the cover. The background is a vibrant purple with a textured water ripple effect that covers the entire frame, creating a dynamic and clean aesthetic.",
+    ". The background is a dark slate blue and charcoal gray with abstract technical blueprints and database diagrams, creating a technical and sophisticated aesthetic.",
+    ". The background is a warm orange gradient with clean geometric shapes and subtle grain texture, creating a modern and energetic aesthetic.",
+    " in white. The background features abstract organic shapes in earthy tones of terracotta and sage green, with a linen texture, creating a calm and natural aesthetic.",
+    ". The background is a clean grid pattern in light gray with colorful isometric 3D blocks scattered around, creating a playful and structural aesthetic.",
+    ". The background is a dark moody scene with abstract light leaks and smoke effects in deep blue and crimson, creating a dramatic and mysterious aesthetic.",
+    ". The background is a composition of flat color blocks in a Swiss design style (red, black, yellow) with bold typography and negative space, creating a clean and powerful aesthetic.",
+    ". The background is a soft pastel gradient of pink and blue with floating abstract 3D spheres and a frosted glass overlay effect, creating a dreamlike and premium aesthetic.",
+    ". The background features a dense pattern of stylized monstera leaves and tropical foliage in deep greens, with a subtle paper cutout texture, creating a lush and organic aesthetic.",
+    ". The background is a minimalist dark mode design with a subtle carbon fiber texture and a single thin accent line in emerald green, creating a sleek and modern aesthetic.",
+    ". The background is a collage of abstract black and white photography fragments and torn paper edges, creating a raw and artistic aesthetic.",
+    ". The background is a smooth liquid gold gradient with dynamic flowing curves and a metallic sheen, creating a luxurious and elegant aesthetic.",
+    ". The background is a vintage-inspired design with a sepia tone, subtle film grain, and abstract circular shapes overlapping, creating a nostalgic and timeless aesthetic."
+]
 
 def generate_image(prompt, output_path, reference=None, aspect_ratio="1:1"):
     client = genai.Client()
@@ -90,36 +110,11 @@ def main():
         title = metadata.get("show_title", "AI Radio")
         summary = metadata.get("two_sentence_summary", "")
 
-        print(f"Generating prompt from metadata for title: '{title}'")
+        print(f"Selecting prompt template for title: '{title}'")
 
-        prompt_gen_prompt = f"""You are a creative prompt engineer for an image generation model.
-Generate a prompt for a podcast cover image based on the following show metadata:
-Title: {title}
-Summary: {summary}
-
-Follow these rules strictly:
-1. The prompt must describe a cover image that includes the title "{title}" as text with a stylish, bold font.
-2. Do NOT include any humans, DJs, or hosts.
-3. The background must be textured and interesting (e.g., halftone dots, abstract geometry, water ripples).
-4. The design must feel integrated across the entire frame.
-5. Do NOT use futuristic, cyberpunk, or neon themes.
-6. Do NOT include any text other than the show title.
-
-Return ONLY the prompt string.
-"""
-
-        client = genai.Client()
-        interaction = client.interactions.create(
-            model="gemini-3-flash-preview",
-            input=prompt_gen_prompt,
-        )
-
-        if interaction.outputs:
-             prompt = interaction.outputs[-1].text.strip()
-             print(f"Generated prompt: '{prompt}'")
-        else:
-             print("ERROR: Failed to generate prompt from metadata.")
-             sys.exit(1)
+        style = random.choice(PROMPT_STYLES)
+        prompt = BASE_PROMPT.format(title=title) + style
+        print(f"Selected random style. Prompt: '{prompt}'")
 
     output_path = args.output
     if not output_path:
