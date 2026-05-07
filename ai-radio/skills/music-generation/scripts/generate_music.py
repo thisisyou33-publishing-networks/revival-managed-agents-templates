@@ -26,7 +26,7 @@ MOOD_PROMPTS = {
         "Instrumental only, no vocals. High energy and attention-grabbing."
     ),
     "chill": (
-        "Create a 30-second subtle ambient lo-fi track. "
+        "Create a 30-second subtle ambient track. "
         "Soft pads, gentle electric piano, light warm beats. "
         "Perfect as background music for a calm conversation. "
         "Instrumental only, no vocals. Relaxing and non-distracting."
@@ -72,29 +72,41 @@ def main():
     print(f"Mood: {args.mood}")
     print("Generating background music via Interactions API (Lyria)...")
 
-    try:
-        interaction = client.interactions.create(
-            model="lyria-3-clip-preview",
-            input=prompt,
-            store=False,
-        )
+    def generate_music(prompt_text):
+        try:
+            interaction = client.interactions.create(
+                model="lyria-3-clip-preview",
+                input=prompt_text,
+                store=False,
+            )
 
-        for output in interaction.outputs:
-            if output.type == "audio":
-                out_path = os.path.join(out_dir, "background.mp3")
-                with open(out_path, "wb") as f:
-                    f.write(base64.b64decode(output.data))
-                size_kb = os.path.getsize(out_path) / 1024
-                print(f"\n✅ Music saved to {out_path} ({size_kb:.0f} KB)")
-                return
-            elif output.type == "text":
-                print(f"   Lyria note: {output.text[:200]}")
+            for output in interaction.outputs:
+                if output.type == "audio":
+                    out_path = os.path.join(out_dir, "background.mp3")
+                    with open(out_path, "wb") as f:
+                        f.write(base64.b64decode(output.data))
+                    size_kb = os.path.getsize(out_path) / 1024
+                    print(f"\n✅ Music saved to {out_path} ({size_kb:.0f} KB)")
+                    return True
+                elif output.type == "text":
+                    print(f"   Lyria note: {output.text[:200]}")
 
-        print("⚠️  No audio returned from Lyria.")
+            print("⚠️  No audio returned from Lyria.")
+            return False
 
-    except Exception as e:
-        print(f"⚠️  Music generation failed: {e}")
-        print("   Proceeding without background music.")
+        except Exception as e:
+            print(f"⚠️  Music generation failed: {e}")
+            return False
+
+    success = generate_music(prompt)
+
+    if not success:
+        print("\n🔄 Attempting retry with simpler fallback prompt...")
+        fallback_prompt = "Create a 30-second simple ambient background track. Instrumental only, calm and neutral."
+        success = generate_music(fallback_prompt)
+
+    if not success:
+        print("\n❌ Both attempts failed. Proceeding without background music.")
 
 
 if __name__ == "__main__":
