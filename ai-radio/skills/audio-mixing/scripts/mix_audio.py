@@ -15,7 +15,7 @@
 """Mix speech audio and background music into the final AI Radio radio show.
 
 Usage:
-    python mix_audio.py --workspace ./workspace
+    python3 mix_audio.py --workspace ./workspace
 
 Requires:
     pip install pydub

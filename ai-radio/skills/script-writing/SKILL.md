@@ -10,7 +10,7 @@ Generate a naturalistic, multi-character radio show script directly via the LLM.
 ## Embedded Script
 
 ```bash
-python skills/script-writing/scripts/generate_script.py --workspace ./workspace --style debate
+python3 skills/script-writing/scripts/generate_script.py --workspace ./workspace --style debate
 ```
 
 ### Arguments
@@ -34,19 +34,19 @@ python skills/script-writing/scripts/generate_script.py --workspace ./workspace 
 
 ```bash
 # HN discussion with opposing views
-python skills/script-writing/scripts/generate_script.py \
+python3 skills/script-writing/scripts/generate_script.py \
   --workspace ./workspace --style debate
 
 # Panel discussion about a GitHub repo
-python skills/script-writing/scripts/generate_script.py \
+python3 skills/script-writing/scripts/generate_script.py \
   --workspace ./workspace --style roundtable
 
 # Interview with an expert about a paper
-python skills/script-writing/scripts/generate_script.py \
+python3 skills/script-writing/scripts/generate_script.py \
   --workspace ./workspace --style interview
 
 # Explain a new technology
-python skills/script-writing/scripts/generate_script.py \
+python3 skills/script-writing/scripts/generate_script.py \
   --workspace ./workspace --style explainer
 ```
 

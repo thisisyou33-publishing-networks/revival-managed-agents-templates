@@ -38,17 +38,17 @@ Upon execution, you should:
 User prompt
   ├── 1. RESEARCH: Agent picks the right script (fetch_hn.py, fetch_github.py, fetch_url.py, or Google Search)
   │       → {workspace}/data/research/*.md
-  ├── 2. python skills/script-writing/scripts/generate_script.py --workspace ./workspace --style <style>
+  ├── 2. python3 skills/script-writing/scripts/generate_script.py --workspace ./workspace --style <style>
   │       → {workspace}/data/script.md
-  ├── 3. python skills/tts-generation/scripts/generate_tts.py --workspace ./workspace
+  ├── 3. python3 skills/tts-generation/scripts/generate_tts.py --workspace ./workspace
   │       → {workspace}/audio/speech/speech.wav
-  ├── 4. python skills/music-generation/scripts/generate_music.py --workspace ./workspace --mood <mood>
+  ├── 4. python3 skills/music-generation/scripts/generate_music.py --workspace ./workspace --mood <mood>
   │       → {workspace}/audio/music/background.mp3
-  ├── 5. python skills/audio-mixing/scripts/mix_audio.py --workspace ./workspace
+  ├── 5. python3 skills/audio-mixing/scripts/mix_audio.py --workspace ./workspace
   │       → {workspace}/audio/final/ai_radio.wav + ai_radio.mp3
-  ├── 6. python skills/metadata-generation/scripts/generate_metadata.py --workspace ./workspace
+  ├── 6. python3 skills/metadata-generation/scripts/generate_metadata.py --workspace ./workspace
   │       → {workspace}/data/show_notes.json
-  └── 7. python skills/cover-image-generation/scripts/generate_image.py --workspace ./workspace --metadata ./workspace/data/show_notes.json
+  └── 7. python3 skills/cover-image-generation/scripts/generate_image.py --workspace ./workspace --metadata ./workspace/data/show_notes.json
           → {workspace}/images/cover.png
 ```
 

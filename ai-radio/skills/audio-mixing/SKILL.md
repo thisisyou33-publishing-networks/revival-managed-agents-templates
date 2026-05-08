@@ -10,7 +10,7 @@ Combine the TTS speech audio and Lyria background music into a single, polished 
 ## Embedded Script
 
 ```bash
-python skills/audio-mixing/scripts/mix_audio.py --workspace ./workspace
+python3 skills/audio-mixing/scripts/mix_audio.py --workspace ./workspace
 ```
 
 ### Arguments

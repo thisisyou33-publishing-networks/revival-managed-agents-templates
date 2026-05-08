@@ -2,7 +2,7 @@
 """Generate show metadata (JSON) from audio and transcript using the Interactions API.
 
 Usage:
-    python generate_metadata.py --workspace ./workspace
+    python3 generate_metadata.py --workspace ./workspace
 
 Requires:
     pip install google-genai pydub

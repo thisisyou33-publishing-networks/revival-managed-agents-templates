@@ -10,7 +10,7 @@ Generate background music for the radio show using the Lyria model via the **Int
 ## Embedded Script
 
 ```bash
-python skills/music-generation/scripts/generate_music.py --workspace ./workspace --mood news
+python3 skills/music-generation/scripts/generate_music.py --workspace ./workspace --mood news
 ```
 
 ### Arguments

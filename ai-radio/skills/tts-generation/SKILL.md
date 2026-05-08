@@ -10,7 +10,7 @@ Convert the radio show script into speech audio using the Gemini TTS model via t
 ## Embedded Script
 
 ```bash
-python skills/tts-generation/scripts/generate_tts.py --workspace ./workspace
+python3 skills/tts-generation/scripts/generate_tts.py --workspace ./workspace
 ```
 
 ### Arguments

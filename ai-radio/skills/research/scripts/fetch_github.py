@@ -15,8 +15,8 @@
 """Fetch GitHub repository activity for AI Radio research.
 
 Usage:
-    python fetch_github.py --repo googleapis/python-genai --workspace ./workspace
-    python fetch_github.py --repo https://github.com/google/generative-ai-python --workspace ./workspace
+    python3 fetch_github.py --repo googleapis/python-genai --workspace ./workspace
+    python3 fetch_github.py --repo https://github.com/google/generative-ai-python --workspace ./workspace
 
 Output:
     {workspace}/data/research/github.md

@@ -26,7 +26,7 @@ The skill is implemented in `scripts/generate_metadata.py`.
 
 ```python
 # Example usage
-python skills/metadata-generation/scripts/generate_metadata.py --workspace ./workspace
+python3 skills/metadata-generation/scripts/generate_metadata.py --workspace ./workspace
 ```
 
 ## Output

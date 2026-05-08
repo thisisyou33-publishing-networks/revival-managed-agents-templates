@@ -2,7 +2,7 @@
 """Generate cover image for AI Radio using Gemini 3 Pro Image (Nano Banana Pro).
 
 Usage:
-    python generate_image.py --workspace ./workspace --prompt "Futuristic radio station"
+    python3 generate_image.py --workspace ./workspace --prompt "Futuristic radio station"
 
 Requires:
     pip install google-genai

@@ -15,10 +15,10 @@
 """Fetch Hacker News stories in two phases: scan, then deep-dive.
 
 Phase 1 — Scan (agent picks what's interesting):
-    python fetch_hn.py --workspace ./workspace --mode scan --top 10
+    python3 fetch_hn.py --workspace ./workspace --mode scan --top 10
 
 Phase 2 — Deep-dive (agent tells us which stories to expand):
-    python fetch_hn.py --workspace ./workspace --mode deep-dive --stories 43210987,43209876,43208765
+    python3 fetch_hn.py --workspace ./workspace --mode deep-dive --stories 43210987,43209876,43208765
 
 Output:
     scan:       {workspace}/data/research/hn-scan.md
@@ -104,7 +104,7 @@ def do_scan(args):
     lines.append("")
     lines.append("Pick the 2-3 stories that would make the best radio discussion, then run:")
     lines.append("```")
-    lines.append("python skills/research/scripts/fetch_hn.py --workspace ./workspace --mode deep-dive --stories <id1>,<id2>,<id3>")
+    lines.append("python3 skills/research/scripts/fetch_hn.py --workspace ./workspace --mode deep-dive --stories <id1>,<id2>,<id3>")
     lines.append("```")
     lines.append("")
 
@@ -204,7 +204,7 @@ def main():
     elif args.mode == "deep-dive":
         if not args.stories:
             print("ERROR: --stories is required for deep-dive mode")
-            print("Usage: python fetch_hn.py --mode deep-dive --stories 12345,67890")
+            print("Usage: python3 fetch_hn.py --mode deep-dive --stories 12345,67890")
             return
         do_deep_dive(args)
 

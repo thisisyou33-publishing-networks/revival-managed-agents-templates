@@ -13,9 +13,9 @@ All research scripts live in `skills/research/scripts/` and output to `{workspac
 
 | Script | Command | Source |
 |--------|---------|--------|
-| `fetch_hn.py` | `python skills/research/scripts/fetch_hn.py --workspace ./workspace --top 6` | Hacker News |
-| `fetch_github.py` | `python skills/research/scripts/fetch_github.py --repo owner/repo --workspace ./workspace` | GitHub repos |
-| `fetch_url.py` | `python skills/research/scripts/fetch_url.py --url https://... --workspace ./workspace` | Any URL |
+| `fetch_hn.py` | `python3 skills/research/scripts/fetch_hn.py --workspace ./workspace --top 6` | Hacker News |
+| `fetch_github.py` | `python3 skills/research/scripts/fetch_github.py --repo owner/repo --workspace ./workspace` | GitHub repos |
+| `fetch_url.py` | `python3 skills/research/scripts/fetch_url.py --url https://... --workspace ./workspace` | Any URL |
 
 ## Script Details
 
@@ -24,7 +24,7 @@ All research scripts live in `skills/research/scripts/` and output to `{workspac
 **Phase 1: Scan** — grab top 10 story titles, scores, and comment counts (fast, no deep-diving):
 
 ```bash
-python skills/research/scripts/fetch_hn.py --workspace ./workspace --mode scan --top 10
+python3 skills/research/scripts/fetch_hn.py --workspace ./workspace --mode scan --top 10
 ```
 
 Output: `{workspace}/data/research/hn-scan.md` — a list of stories with IDs.
@@ -36,7 +36,7 @@ When picking stories, **SKIP** anything related to politics, race, religion, int
 **Phase 2: Deep-dive** — fetch full comment threads for the stories you picked:
 
 ```bash
-python skills/research/scripts/fetch_hn.py --workspace ./workspace --mode deep-dive --stories 43210987,43209876
+python3 skills/research/scripts/fetch_hn.py --workspace ./workspace --mode deep-dive --stories 43210987,43209876
 ```
 
 Output: `{workspace}/data/research/hacker-news.md` — full stories with top comments.
@@ -51,7 +51,7 @@ Output: `{workspace}/data/research/hacker-news.md` — full stories with top com
 ### fetch_github.py — GitHub Repository
 
 ```bash
-python skills/research/scripts/fetch_github.py --repo googleapis/python-genai --workspace ./workspace
+python3 skills/research/scripts/fetch_github.py --repo googleapis/python-genai --workspace ./workspace
 ```
 
 Accepts `owner/repo` or a full GitHub URL (`https://github.com/owner/repo`).
@@ -75,7 +75,7 @@ Uses the **GitHub REST API** directly — no auth needed for public repos.
 ### fetch_url.py — Any URL
 
 ```bash
-python skills/research/scripts/fetch_url.py --url https://example.com/blog-post --workspace ./workspace
+python3 skills/research/scripts/fetch_url.py --url https://example.com/blog-post --workspace ./workspace
 ```
 
 | Argument | Default | Description |

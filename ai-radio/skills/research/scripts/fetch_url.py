@@ -15,8 +15,8 @@
 """Fetch and extract content from any URL for AI Radio research.
 
 Usage:
-    python fetch_url.py --url https://example.com/blog-post --workspace ./workspace
-    python fetch_url.py --url https://arxiv.org/abs/2401.12345 --workspace ./workspace
+    python3 fetch_url.py --url https://example.com/blog-post --workspace ./workspace
+    python3 fetch_url.py --url https://arxiv.org/abs/2401.12345 --workspace ./workspace
 
 Output:
     {workspace}/data/research/url_content.md

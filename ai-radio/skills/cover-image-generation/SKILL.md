@@ -17,7 +17,7 @@ This skill generates an appropriate cover image for the radio show based on a pr
 
 1. **Generate an image**:
    ```bash
-   python skills/cover-image-generation/scripts/generate_image.py \
+   python3 skills/cover-image-generation/scripts/generate_image.py \
      --workspace ./workspace \
      --prompt "A prompt describing the image"
    ```

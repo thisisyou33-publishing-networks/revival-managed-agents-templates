@@ -15,8 +15,8 @@
 """Generate background music for AI Radio using the Interactions API + Lyria.
 
 Usage:
-    python generate_music.py --workspace ./workspace
-    python generate_music.py --workspace ./workspace --mood chill
+    python3 generate_music.py --workspace ./workspace
+    python3 generate_music.py --workspace ./workspace --mood chill
 
 Requires:
     pip install google-genai

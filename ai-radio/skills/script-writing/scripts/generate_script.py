@@ -15,9 +15,9 @@
 """Generate the AI Radio radio show script from research using the Interactions API.
 
 Usage:
-    python generate_script.py --workspace ./workspace
-    python generate_script.py --workspace ./workspace --style debate
-    python generate_script.py --workspace ./workspace --style interview
+    python3 generate_script.py --workspace ./workspace
+    python3 generate_script.py --workspace ./workspace --style debate
+    python3 generate_script.py --workspace ./workspace --style interview
 
 Requires:
     pip install google-genai

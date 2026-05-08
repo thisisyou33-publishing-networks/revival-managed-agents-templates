@@ -15,7 +15,7 @@
 """Generate TTS audio with telephone effect on correspondent voices using the Interactions API.
 
 Usage:
-    python generate_tts.py --workspace ./workspace
+    python3 generate_tts.py --workspace ./workspace
 
 Requires:
     pip install google-genai
