@@ -1,0 +1,8 @@
+id: customer-support
+base_agent: waverunner
+description: "Website-powered customer support agent. Provide a URL, the agent scans and analyzes the site to build a local support corpus, and answers questions using that corpus."
+tools:
+  - type: code_execution
+  - type: google_search
+environment:
+  enabled: true
