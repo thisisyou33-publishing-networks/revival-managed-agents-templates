@@ -68,14 +68,16 @@ def generate_image(prompt, output_path, reference=None, aspect_ratio="1:1"):
             }
         )
 
-        for output in interaction.outputs:
-            if output.type == "image":
-                image_data = base64.b64decode(output.data)
-                os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                with open(output_path, "wb") as f:
-                    f.write(image_data)
-                print(f"✅ Image saved to {output_path}")
-                return True
+        for step in interaction.steps:
+            if step.type == "model_output" and isinstance(step.content, list):
+                for content in step.content:
+                    if content.type == "image":
+                        image_data = base64.b64decode(content.data)
+                        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                        with open(output_path, "wb") as f:
+                            f.write(image_data)
+                        print(f"✅ Image saved to {output_path}")
+                        return True
 
         print("⚠️  No image returned in response.")
         return False

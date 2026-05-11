@@ -178,7 +178,11 @@ def main():
         system_instruction=system_prompt,
     )
 
-    script = interaction.outputs[-1].text
+    if interaction.steps:
+        script = interaction.steps[-1].content[0].text
+    else:
+        print("ERROR: No output received from Gemini.")
+        return
 
     # Save
     out_path = os.path.join(args.workspace, "data", "script.md")

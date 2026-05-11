@@ -113,8 +113,8 @@ Return ONLY a valid JSON object. Do NOT wrap it in markdown code blocks. Ensure 
 
         # Access response
         response_text = ""
-        if interaction.outputs:
-            response_text = interaction.outputs[-1].text
+        if interaction.steps:
+            response_text = interaction.steps[-1].content[0].text
         else:
              print("ERROR: No output received from Gemini.")
              return

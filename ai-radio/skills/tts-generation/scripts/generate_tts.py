@@ -120,11 +120,13 @@ def generate_tts_single(client, speaker, text, output_path, voice, accent):
         store=False,
     )
 
-    for output in interaction.outputs:
-        if output.type == "audio":
-            pcm_data = base64.b64decode(output.data)
-            wave_file(output_path, pcm_data)
-            return True
+    for step in interaction.steps:
+        if step.type == "model_output" and isinstance(step.content, list):
+            for content in step.content:
+                if content.type == "audio":
+                    pcm_data = base64.b64decode(content.data)
+                    wave_file(output_path, pcm_data)
+                    return True
 
     return False
 

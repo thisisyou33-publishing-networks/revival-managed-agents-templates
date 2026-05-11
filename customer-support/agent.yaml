@@ -5,4 +5,5 @@ tools:
   - type: code_execution
   - type: google_search
 environment:
-  enabled: true
+  type: "remote"
+  sources: []

@@ -103,9 +103,8 @@ def make_payload():
     payload = {
         "input": prompt,
         "environment": {
-            "config": {
-                "sources": sources
-            }
+            "type": "remote",
+            "sources": sources
         },
         "agent": base_agent,
         "tools": tools,
