@@ -1,0 +1,161 @@
+name: Hourly Template Probe
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Run every hour
+  workflow_dispatch:      # Allow manual trigger
+  pull_request:          # Allow testing on PRs
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Generate Matrix
+        id: set-matrix
+        run: |
+          JSON="[]"
+          for d in */; do
+            name=$(basename "$d")
+            if [ -f "$d/agent.yaml" ]; then
+              prompt="Run template $name"
+              if [ -f "$d/prompt.txt" ]; then
+                prompt=$(cat "$d/prompt.txt")
+              fi
+              JSON=$(jq -n -c --arg name "$name" --arg prompt "$prompt" --argjson arr "$JSON" '$arr + [{"template": $name, "prompt": $prompt}]')
+            fi
+          done
+          echo "matrix=$JSON" >> $GITHUB_OUTPUT
+
+  probe:
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.matrix) }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
+      - name: Run Probe
+        id: run_probe
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          TEMPLATE="${{ matrix.template }}"
+          PROMPT="${{ matrix.prompt }}"
+
+          n=0
+          until [ "$n" -ge 3 ]; do
+            echo "::group::Attempt $((n+1))/3 for $TEMPLATE"
+
+            # Generate the payload
+            cd "$GITHUB_WORKSPACE/$TEMPLATE"
+            python3 "$GITHUB_WORKSPACE/generate_payload.py" "$PROMPT" > /tmp/probe_payload.json
+
+            # Send the request, capture HTTP status code separately
+            HTTP_CODE=$(curl -s -o /tmp/probe_response.log -w "%{http_code}" \
+              -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
+              -H "Content-Type: application/json" \
+              -H "x-goog-api-key: $GEMINI_API_KEY" \
+              -H "x-server-timeout: 600" \
+              --max-time 660 \
+              -d @/tmp/probe_payload.json)
+
+            echo "HTTP status: $HTTP_CODE"
+
+            # Check for success: HTTP 200 and response body is non-empty
+            RESPONSE_SIZE=$(wc -c < /tmp/probe_response.log | tr -d ' ')
+
+            if [ "$HTTP_CODE" = "200" ] && [ "$RESPONSE_SIZE" -gt 0 ]; then
+              # Check response doesn't contain top-level error
+              if ! grep -q '"error"' /tmp/probe_response.log 2>/dev/null; then
+                echo "Probe succeeded."
+                echo "::endgroup::"
+                break
+              else
+                echo "Response contained error:"
+                head -c 500 /tmp/probe_response.log
+              fi
+            else
+              echo "Probe failed (HTTP $HTTP_CODE, response size: $RESPONSE_SIZE bytes)"
+              head -c 500 /tmp/probe_response.log
+            fi
+
+            echo "::endgroup::"
+            n=$((n+1))
+            if [ "$n" -lt 3 ]; then
+              echo "Retrying in 10 seconds... (Attempt $((n+1))/3)"
+              sleep 10
+            fi
+          done
+
+          if [ "$n" -ge 3 ]; then
+            echo "Probe failed after 3 attempts."
+            exit 1
+          fi
+
+      - name: Manage Issues
+        if: always() && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEMPLATE: ${{ matrix.template }}
+          STATUS: ${{ steps.run_probe.outcome }}
+        run: |
+          ISSUE=$(gh issue list --state open --json number,title -q ".[] | select(.title | contains(\"$TEMPLATE\")) | .number")
+
+          if [ "$STATUS" = "success" ]; then
+            if [ -n "$ISSUE" ]; then
+              echo "Probe succeeded. Closing issue #$ISSUE."
+              gh issue close "$ISSUE" --comment "Probe succeeded in run $GITHUB_RUN_ID. Closing issue."
+            else
+              echo "Probe succeeded and no open issue found."
+            fi
+          else
+            if [ -n "$ISSUE" ]; then
+              LABELS=$(gh issue view "$ISSUE" --json labels -q ".labels[].name")
+              IS_PENDING=$(echo "$LABELS" | grep -q "probe-pending" && echo "true" || echo "false")
+
+              if [ "$IS_PENDING" = "true" ]; then
+                CREATED_AT=$(gh issue view "$ISSUE" --json createdAt -q ".createdAt")
+                CREATED_SEC=$(date -d "$CREATED_AT" +%s)
+                NOW_SEC=$(date +%s)
+                AGE_MIN=$(( (NOW_SEC - CREATED_SEC) / 60 ))
+
+                if [ "$AGE_MIN" -gt 90 ]; then
+                  echo "Pending issue #$ISSUE is older than 90 minutes ($AGE_MIN mins). Promoting to active."
+                  gh issue edit "$ISSUE" --title "Probe Failed: $TEMPLATE" --remove-label "probe-pending" --add-label "probe-failing"
+                  gh issue comment "$ISSUE" --body "Probe failed again after 2 hours. Promoting to active issue."
+                else
+                  echo "Pending issue #$ISSUE is not old enough yet ($AGE_MIN mins). Adding comment."
+                  gh issue comment "$ISSUE" --body "Probe failed again in run $GITHUB_RUN_ID. Still pending escalation."
+                fi
+              else
+                echo "Active issue #$ISSUE found. Adding comment."
+                gh issue comment "$ISSUE" --body "Probe failed again in run $GITHUB_RUN_ID."
+              fi
+            else
+              echo "No issue found. Creating pending issue."
+              gh issue create \
+                --title "[Pending] Probe Failed: $TEMPLATE" \
+                --body "Probe failed for template $TEMPLATE in run $GITHUB_RUN_ID. Waiting 2 hours before escalation." \
+                --label "probe-pending"
+            fi
+          fi

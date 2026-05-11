@@ -1,0 +1,1 @@
+Generate a 2-minute radio show script about the top 3 stories on Hacker News today.

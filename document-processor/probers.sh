@@ -17,8 +17,11 @@ if [ -z "$GEMINI_API_KEY" ]; then
   exit 1
 fi
 
+# Read prompt from prompt.txt
+PROMPT=$(cat prompt.txt)
+
 # Generate payload
-python3 ../generate_payload.py "Reconcile the expenses in expenses.csv with the invoices in the invoices folder and report any discrepancies." > probers.json
+python3 ../generate_payload.py "$PROMPT" > probers.json
 
 # Send request (saving output to prober_output.log)
 curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \

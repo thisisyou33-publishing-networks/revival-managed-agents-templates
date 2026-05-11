@@ -20,8 +20,11 @@ fi
 # Create temporary .env file
 echo "GEMINI_API_KEY=$GEMINI_API_KEY" > .env
 
+# Read prompt from prompt.txt
+PROMPT=$(cat prompt.txt)
+
 # Generate payload
-python3 ../generate_payload.py "Generate a 2-minute radio show script about the top 3 stories on Hacker News today." > probers.json
+python3 ../generate_payload.py "$PROMPT" > probers.json
 
 # Send request (saving output to prober_output.log)
 curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
