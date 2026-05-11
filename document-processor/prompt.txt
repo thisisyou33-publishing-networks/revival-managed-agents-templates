@@ -1,1 +1,0 @@
-Reconcile the expenses in expenses.csv with the invoices in the invoices folder and report any discrepancies.

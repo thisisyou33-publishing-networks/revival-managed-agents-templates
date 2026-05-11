@@ -1,0 +1,8 @@
+- title: "Top Issues"
+  prompt: "Clone https://github.com/user/repo and tell me what the top issues are."
+
+- title: "Fix Critical Issue"
+  prompt: "Find the most critical open issue and generate a .patch file to fix it."
+
+- title: "Repo Overview"
+  prompt: "Give me an overview of the repository structure and README."

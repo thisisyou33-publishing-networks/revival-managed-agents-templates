@@ -1,1 +1,0 @@
-Analyze the sales data in customers.csv and orders.csv and give me a summary of top customers and most popular products.

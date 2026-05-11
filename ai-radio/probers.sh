@@ -20,8 +20,8 @@ fi
 # Create temporary .env file
 echo "GEMINI_API_KEY=$GEMINI_API_KEY" > .env
 
-# Read prompt from prompt.txt
-PROMPT=$(cat prompt.txt)
+# Read prompt from first chip in chips.yaml
+PROMPT=$(python3 -c "import yaml; print(yaml.safe_load(open('chips.yaml'))[0]['prompt'])")
 
 # Generate payload
 python3 ../generate_payload.py "$PROMPT" > probers.json

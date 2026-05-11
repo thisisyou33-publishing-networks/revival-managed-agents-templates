@@ -17,8 +17,8 @@ if [ -z "$GEMINI_API_KEY" ]; then
   exit 1
 fi
 
-# Read prompt from prompt.txt
-PROMPT=$(cat prompt.txt)
+# Read prompt from first chip in chips.yaml
+PROMPT=$(python3 -c "import yaml; print(yaml.safe_load(open('chips.yaml'))[0]['prompt'])")
 
 # Generate payload
 python3 ../generate_payload.py "$PROMPT" > probers.json

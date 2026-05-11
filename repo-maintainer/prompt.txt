@@ -1,1 +1,0 @@
-Check the repository https://github.com/googleapis/python-genai and identify any open issues related to documentation.
