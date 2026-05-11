@@ -32,33 +32,13 @@ python3 skills/tts-generation/scripts/generate_tts.py --workspace ./workspace
 
 ### Dependencies
 
-- `google-genai` (>= 1.55.0)
+- `google-genai` (>= 2.0.0)
 - `ffmpeg` (system)
 - `GEMINI_API_KEY` environment variable
 
 ## API Details
 
-Uses the **Interactions API** with single-speaker TTS — no multi-speaker workaround needed:
-
-```python
-interaction = client.interactions.create(
-    model="gemini-3.1-flash-tts-preview",
-    input=text,
-    response_modalities=["audio"],
-    generation_config={
-        "speech_config": {
-            "voice": "Puck",
-            "language": "en-US",
-        }
-    },
-    store=False,
-)
-
-for output in interaction.outputs:
-    if output.type == "audio":
-        pcm_data = base64.b64decode(output.data)
-        wave_file("output.wav", pcm_data)
-```
+Uses the **Interactions API** with single-speaker TTS — no multi-speaker workaround needed.
 
 ## Voice Assignment
 
