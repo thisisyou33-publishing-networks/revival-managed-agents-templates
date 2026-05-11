@@ -17,8 +17,11 @@ if [ -z "$GEMINI_API_KEY" ]; then
   exit 1
 fi
 
+# Read prompt from first chip in chips.yaml
+PROMPT=$(python3 -c "import yaml; print(yaml.safe_load(open('chips.yaml'))[0]['prompt'])")
+
 # Generate payload
-python3 ../generate_payload.py "Check the repository https://github.com/googleapis/python-genai and identify any open issues related to documentation." > probers.json
+python3 ../generate_payload.py "$PROMPT" > probers.json
 
 # Send request (saving output to prober_output.log)
 curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \

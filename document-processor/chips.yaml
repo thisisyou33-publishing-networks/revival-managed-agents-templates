@@ -1,0 +1,8 @@
+- title: "Reconcile Expenses"
+  prompt: "Reconcile expenses in expenses.csv with the invoices and flag all discrepancies."
+
+- title: "Unmatched Invoices"
+  prompt: "Which invoices don't match any expense record?"
+
+- title: "Expenses by Category"
+  prompt: "Summarize the total expenses by category."
