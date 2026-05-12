@@ -1,5 +1,5 @@
 id: data-analyst
-base_agent: waverunner
+base_agent: antigravity-preview-05-2026
 description: "Data analyst agent focused on business intelligence and analysis using the Microsoft Northwind dataset."
 tools:
   - type: code_execution
