@@ -20,16 +20,18 @@ fi
 # Create temporary .env file
 echo "GEMINI_API_KEY=$GEMINI_API_KEY" > .env
 
-# Read prompt from first chip in chips.yaml
-PROMPT=$(python3 -c "import yaml; print(yaml.safe_load(open('chips.yaml'))[0]['prompt'])")
+# Read prompt from first example in agent.yaml
+PROMPT=$(python3 -c "import yaml; print(yaml.safe_load(open('agent.yaml'))['examples'][0]['prompt'])")
 
 # Generate payload
 python3 ../generate_payload.py "$PROMPT" > probers.json
 
 # Send request (saving output to prober_output.log)
-curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
+curl -N -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
   -H "Content-Type: application/json" \
+  -H "Accept: text/event-stream" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
+  -H "Api-Revision: 2026-05-20" \
   -H "x-server-timeout: 600" \
   -d @probers.json > prober_output.log
 

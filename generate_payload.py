@@ -98,19 +98,32 @@ def make_payload():
     add_files('skills')
     add_files('workspace')
 
+    # Merge sources from environment.sources in agent.yaml (e.g. gcs, github)
+    env = config.get('environment', {})
+    if isinstance(env, dict) and env.get('type') == 'remote':
+        for src in env.get('sources', []):
+            sources.append(src)
+
+    # Also merge top-level sources from agent.yaml
+    for src in config.get('sources', []):
+        sources.append(src)
+
     prompt = sys.argv[1] if len(sys.argv) > 1 else "Hello"
     
     payload = {
         "input": prompt,
         "environment": {
-            "config": {
-                "sources": sources
-            }
+            "type": "remote",
+            "sources": sources
         },
-        "agent": base_agent,
         "tools": tools,
         "stream": True
     }
+    
+    if base_agent.startswith('gemini-'):
+        payload["model"] = base_agent
+    else:
+        payload["agent"] = base_agent
     
     if instructions:
         payload["system_instruction"] = instructions
