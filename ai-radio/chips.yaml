@@ -1,8 +1,0 @@
-- title: "Daily Hacker Bites"
-  prompt: "Generate a 3-minute radio show called Daily Hacker Bites based on top Hacker News stories."
-
-- title: "Python GenAI Roundtable"
-  prompt: "Generate a 3-minute radio with a roundtable concept, educating listeners about https://github.com/googleapis/python-genai"
-
-- title: "Jet News Debate"
-  prompt: "Generate a 3-minute debate show called Jet News researching the latest about Jet A1 aviation fuel shortage."

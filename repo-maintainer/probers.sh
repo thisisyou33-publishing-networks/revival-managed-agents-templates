@@ -17,8 +17,8 @@ if [ -z "$GEMINI_API_KEY" ]; then
   exit 1
 fi
 
-# Read prompt from first chip in chips.yaml
-PROMPT=$(python3 -c "import yaml; print(yaml.safe_load(open('chips.yaml'))[0]['prompt'])")
+# Read prompt from first example in agent.yaml
+PROMPT=$(python3 -c "import yaml; print(yaml.safe_load(open('agent.yaml'))['examples'][0]['prompt'])")
 
 # Generate payload
 python3 ../generate_payload.py "$PROMPT" > probers.json
@@ -27,6 +27,8 @@ python3 ../generate_payload.py "$PROMPT" > probers.json
 curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
   -H "Content-Type: application/json" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
+  -H "Accept: text/event-stream" \
+  -H "Api-Revision: 2026-05-20" \
   -H "x-server-timeout: 600" \
   -d @probers.json > prober_output.log
 

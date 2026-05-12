@@ -7,3 +7,10 @@ tools:
 environment:
   type: "remote"
   sources: []
+examples:
+  - title: "Biggest Customer"
+    prompt: "Who is my biggest customer?"
+  - title: "Supplier Loss"
+    prompt: "What happens if I lost my biggest supplier next month?"
+  - title: "Revenue Forecast"
+    prompt: "Predict next month's revenue."

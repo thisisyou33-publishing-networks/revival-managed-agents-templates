@@ -7,3 +7,10 @@ tools:
 environment:
   type: "remote"
   sources: []
+examples:
+  - title: "Gemini Docs Support (API Key)"
+    prompt: "Scan https://ai.google.dev/gemini-api/docs and tell me how to get an API key."
+  - title: "Gemini Docs Support (Rate Limits)"
+    prompt: "Scan https://ai.google.dev/gemini-api/docs and tell me what the rate limits are."
+  - title: "Gemini Docs Support (Models)"
+    prompt: "Scan https://ai.google.dev/gemini-api/docs and summarize the available models."

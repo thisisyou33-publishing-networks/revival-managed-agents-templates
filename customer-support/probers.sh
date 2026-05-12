@@ -17,9 +17,6 @@ if [ -z "$GEMINI_API_KEY" ]; then
   exit 1
 fi
 
-# Create temporary .env file
-echo "GEMINI_API_KEY=$GEMINI_API_KEY" > .env
-
 # Read prompt from first example in agent.yaml
 PROMPT=$(python3 -c "import yaml; print(yaml.safe_load(open('agent.yaml'))['examples'][0]['prompt'])")
 
@@ -27,7 +24,7 @@ PROMPT=$(python3 -c "import yaml; print(yaml.safe_load(open('agent.yaml'))['exam
 python3 ../generate_payload.py "$PROMPT" > probers.json
 
 # Send request (saving output to prober_output.log)
-curl -N -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" \
+curl -X POST "https://generativelanguage.googleapis.com/v1beta/interactions \
   -H "Content-Type: application/json" \
   -H "Accept: text/event-stream" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
@@ -37,4 +34,3 @@ curl -N -X POST "https://generativelanguage.googleapis.com/v1beta/interactions" 
 
 # Clean up
 rm probers.json
-rm .env
