@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Generate background music for AI Radio using the Interactions API + Lyria.
+"""Generate background music for AI Talk Radio using the Interactions API + Lyria.
 
 Usage:
     python3 generate_music.py --workspace ./workspace
@@ -20,7 +20,6 @@ Usage:
 
 Requires:
     pip install google-genai
-    GEMINI_API_KEY environment variable
 
 Output:
     {workspace}/audio/music/background.mp3
@@ -81,7 +80,7 @@ def main():
 
     prompt = MOOD_PROMPTS[args.mood]
 
-    print(f"=== AI Radio: Music Generation ===\n")
+    print(f"=== AI Talk Radio: Music Generation ===\n")
     print(f"Mood: {args.mood}")
     print("Generating background music via Interactions API (Lyria)...")
 
