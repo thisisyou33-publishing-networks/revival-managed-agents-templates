@@ -27,7 +27,7 @@ def make_payload():
         config = yaml.safe_load(f)
     
     agent_id = config.get('id')
-    base_agent = config.get('base_agent', 'waverunner')
+    base_agent = config.get('base_agent', 'antigravity-preview-05-2026')
     tools = config.get('tools', [])
     instructions = config.get('instructions')
     

@@ -1,5 +1,5 @@
 id: repo-maintainer
-base_agent: waverunner
+base_agent: antigravity-preview-05-2026
 description: "Agent to understand a repository, identify top issues, and generate .patch files to fix them. Supports analyzing repo structure and answering high-level questions about issues."
 tools:
   - type: code_execution
