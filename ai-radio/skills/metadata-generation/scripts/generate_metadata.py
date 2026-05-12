@@ -6,7 +6,6 @@ Usage:
 
 Requires:
     pip install google-genai pydub
-    GEMINI_API_KEY environment variable
 
 Output:
     {workspace}/data/show_notes.json
@@ -20,7 +19,7 @@ from google import genai
 from pydub import AudioSegment
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate AI Radio show metadata")
+    parser = argparse.ArgumentParser(description="Generate AI Talk Radio show metadata")
     parser.add_argument("--workspace", default="workspace", help="Workspace directory")
     args = parser.parse_args()
 
@@ -47,7 +46,7 @@ def main():
         print(f"ERROR: Audio file not found in {os.path.dirname(audio_mp3)}")
         return
 
-    print("=== AI Radio: Metadata Generation ===\n")
+    print("=== AI Talk Radio: Metadata Generation ===\n")
     print(f"Transcript: {transcript_path}")
     print(f"Audio: {audio_path}")
 
