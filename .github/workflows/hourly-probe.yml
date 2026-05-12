@@ -39,8 +39,8 @@ jobs:
               for example in examples:
                   matrix.append({
                       'template': template,
-                      'chip': example['display_title'],
-                      'prompt': example['full_prompt'],
+                      'chip': example['title'],
+                      'prompt': example['prompt'],
                   })
 
           print(f'Found {len(matrix)} chip(s) across templates')
