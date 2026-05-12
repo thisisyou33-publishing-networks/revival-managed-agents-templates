@@ -14,7 +14,7 @@ All work is performed in the `./workspace` directory. All paths are relative to 
    ```
 2. Install required libraries:
    ```bash
-   pip install pydub
+   pip install pydub "google-genai>=2.0.1"
    ```
 
 ## Workflow

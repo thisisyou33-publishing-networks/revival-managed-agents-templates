@@ -60,24 +60,24 @@ def generate_image(prompt, output_path, reference=None, aspect_ratio="1:1"):
         interaction = client.interactions.create(
             model="gemini-3-pro-image-preview",
             input=input_content,
-            response_modalities=["image"],
-            generation_config={
-                "image_config": {
-                    "aspect_ratio": aspect_ratio
-                }
+            response_format={
+                "type": "image",
+                "aspect_ratio": aspect_ratio
             }
         )
 
-        for step in interaction.steps:
-            if step.type == "model_output" and isinstance(step.content, list):
-                for content in step.content:
-                    if content.type == "image":
-                        image_data = base64.b64decode(content.data)
-                        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                        with open(output_path, "wb") as f:
-                            f.write(image_data)
-                        print(f"✅ Image saved to {output_path}")
-                        return True
+        for step in getattr(interaction, "steps", []):
+            content_list = getattr(step, "content", [])
+            for item in content_list:
+                item_type = getattr(item, "type", "")
+                mime_type = getattr(item, "mime_type", "")
+                if item_type == "image" or (isinstance(mime_type, str) and mime_type.startswith("image/")):
+                    image_data = base64.b64decode(item.data)
+                    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                    with open(output_path, "wb") as f:
+                        f.write(image_data)
+                    print(f"✅ Image saved to {output_path}")
+                    return True
 
         print("⚠️  No image returned in response.")
         return False

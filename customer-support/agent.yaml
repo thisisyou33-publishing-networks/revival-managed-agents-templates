@@ -14,3 +14,7 @@ examples:
     prompt: "Scan https://ai.google.dev/gemini-api/docs and tell me what the rate limits are."
   - title: "Gemini Docs Support (Models)"
     prompt: "Scan https://ai.google.dev/gemini-api/docs and summarize the available models."
+  - title: "FastAPI Support Bot"
+    prompt: "Index the FastAPI docs at fastapi.tiangolo.com and build a Q&A tool."
+  - title: "Gemini API Support Bot"
+    prompt: "Index the Gemini API docs at ai.google.dev/gemini-api/docs and answer questions about rate limits, pricing, and available models."

@@ -159,12 +159,12 @@ def main():
         "- Target ~450-500 words total.",
         f"- Target ~{target_words} words total."
     )
-    
+
     # Make style prompt durations dynamic
     main_seg_min = (args.duration * 60 - 40) / 60
     main_seg_str = f"{main_seg_min:.1f} min"
     style_prompt = STYLE_PROMPTS[args.style].replace("2.5 min", main_seg_str)
-    
+
     system_prompt = modified_base_prompt + style_prompt
 
     print(f"=== AI Radio: Script Generation ===\n")
@@ -178,11 +178,7 @@ def main():
         system_instruction=system_prompt,
     )
 
-    if interaction.steps:
-        script = interaction.steps[-1].content[0].text
-    else:
-        print("ERROR: No output received from Gemini.")
-        return
+    script = interaction.steps[-1].content[0].text
 
     # Save
     out_path = os.path.join(args.workspace, "data", "script.md")

@@ -93,18 +93,20 @@ def main():
                 store=False,
             )
 
-            for step in interaction.steps:
-                if step.type == "model_output" and isinstance(step.content, list):
-                    for content in step.content:
-                        if content.type == "audio":
-                            out_path = os.path.join(out_dir, "background.mp3")
-                            with open(out_path, "wb") as f:
-                                f.write(base64.b64decode(content.data))
-                            size_kb = os.path.getsize(out_path) / 1024
-                            print(f"\n✅ Music saved to {out_path} ({size_kb:.0f} KB)")
-                            return True
-                        elif content.type == "text":
-                            print(f"   Lyria note: {content.text[:200]}")
+            for step in getattr(interaction, "steps", []):
+                content_list = getattr(step, "content", [])
+                for item in content_list:
+                    item_type = getattr(item, "type", "")
+                    mime_type = getattr(item, "mime_type", "")
+                    if item_type == "audio" or (isinstance(mime_type, str) and mime_type.startswith("audio/")):
+                        out_path = os.path.join(out_dir, "background.mp3")
+                        with open(out_path, "wb") as f:
+                            f.write(base64.b64decode(item.data))
+                        size_kb = os.path.getsize(out_path) / 1024
+                        print(f"\n✅ Music saved to {out_path} ({size_kb:.0f} KB)")
+                        return True
+                    elif getattr(item, "type", "") == "text":
+                        print(f"   Lyria note: {item.text[:200]}")
 
             print("⚠️  No audio returned from Lyria.")
             return False

@@ -11,6 +11,6 @@ examples:
   - title: "Daily Hacker Bites"
     prompt: "Generate a 3-minute radio show called Daily Hacker Bites based on top Hacker News stories."
   - title: "GitHub Roundtable for Gemma"
-    prompt: "Generate a 3-minute radio with a roundtable concept, educating listeners about https://github.com/google-deepmind/gemma"
+    prompt: "Generate a 3-minute radio with a roundtable concept, educating listeners about https://github.com/google-deepmind/gemma."
   - title: "McLaren F1 Review"
-    prompt: "Generate a 3-minute sports debate about the performance of the F1 McLaren Team in the most recent Grand Prix"
+    prompt: "Generate a 3-minute sports debate about the performance of the F1 McLaren Team in the most recent Grand Prix."

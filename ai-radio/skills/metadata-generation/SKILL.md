@@ -24,7 +24,7 @@ pip install google-genai
 
 The skill is implemented in `scripts/generate_metadata.py`.
 
-```python
+```bash
 # Example usage
 python3 skills/metadata-generation/scripts/generate_metadata.py --workspace ./workspace
 ```

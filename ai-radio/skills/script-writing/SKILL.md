@@ -59,7 +59,7 @@ python3 skills/script-writing/scripts/generate_script.py \
 
 ### Dependencies
 
-- `google-genai` (>= 1.55.0)
+- `google-genai` (>= 2.0.0)
 - `GEMINI_API_KEY` environment variable
 
 ## Output
