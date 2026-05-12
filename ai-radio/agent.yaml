@@ -5,7 +5,8 @@ tools:
   - type: google_search
   - type: code_execution
 environment:
-  enabled: true
+  type: "remote"
+  sources: []
 examples:
   - title: "Daily Hacker Bites"
     prompt: "Generate a 3-minute radio show called Daily Hacker Bites based on top Hacker News stories."
