@@ -78,24 +78,26 @@ def fetch_releases(owner_repo, limit=5):
         return []
 
 
-def fetch_issues(owner_repo, limit=10):
-    """Fetch issues sorted by most comments (includes PRs)."""
+def fetch_repo_tree(owner_repo, default_branch="main"):
+    """Fetch the repository directory structure."""
     try:
-        return fetch_json(
-            f"{API_BASE}/repos/{owner_repo}/issues?sort=comments&direction=desc&state=all&per_page={limit}"
-        )
+        data = fetch_json(f"{API_BASE}/repos/{owner_repo}/git/trees/{default_branch}?recursive=1")
+        tree = data.get("tree", [])
+        
+        # Filter out deep node_modules, .git, etc. to keep it manageable
+        paths = []
+        for item in tree:
+            path = item.get("path", "")
+            if any(ignore in path for ignore in [".git/", "node_modules/", "venv/", "__pycache__/"]):
+                continue
+            
+            # Only include directories and common code files to keep the list concise
+            if item.get("type") == "tree" or path.endswith((".py", ".js", ".ts", ".tsx", ".jsx", ".md", ".json", ".yml", ".yaml", ".html", ".css", ".rs", ".go", ".java", ".cpp", ".c", ".h")):
+                paths.append(path)
+                
+        return paths[:200] # Limit to 200 paths to avoid massive outputs
     except Exception as e:
-        print(f"  ⚠ Could not fetch issues: {e}")
-        return []
-
-
-def fetch_issue_comments(owner_repo, issue_number, limit=8):
-    """Fetch top comments on an issue."""
-    try:
-        return fetch_json(
-            f"{API_BASE}/repos/{owner_repo}/issues/{issue_number}/comments?per_page={limit}"
-        )
-    except Exception as e:
+        print(f"  ⚠ Could not fetch repo tree: {e}")
         return []
 
 
@@ -113,7 +115,6 @@ def main():
     parser.add_argument("--repo", required=True, help="GitHub repo (owner/repo or full URL)")
     parser.add_argument("--workspace", default="workspace", help="Workspace directory")
     parser.add_argument("--releases", type=int, default=5, help="Number of releases to fetch")
-    parser.add_argument("--issues", type=int, default=8, help="Number of issues to fetch")
     args = parser.parse_args()
 
     owner_repo = parse_repo(args.repo)
@@ -138,12 +139,14 @@ def main():
     releases = fetch_releases(owner_repo, args.releases)
     time.sleep(0.5)
 
-    # Issues
-    print(f"Fetching top issues by engagement (up to {args.issues})...")
-    issues = fetch_issues(owner_repo, args.issues)
+    # Repo Tree
+    print("Fetching repository structure...")
+    default_branch = info.get("default_branch", "main") if info else "main"
+    tree_paths = fetch_repo_tree(owner_repo, default_branch)
 
     # Build markdown
     lines = [f"# GitHub Deep Dive: {owner_repo} — {datetime.now().strftime('%B %d, %Y')}\n"]
+    lines.append("This research focuses on understanding the repository's purpose, how it works, and its codebase structure to provide an informative and helpful overview.\n")
 
     # Repo overview
     if info:
@@ -152,22 +155,22 @@ def main():
         lines.append(f"- **Description**: {info.get('description', 'N/A')}")
         lines.append(f"- **Stars**: {info.get('stargazers_count', 0):,}")
         lines.append(f"- **Forks**: {info.get('forks_count', 0):,}")
-        lines.append(f"- **Open Issues**: {info.get('open_issues_count', 0):,}")
         lines.append(f"- **Language**: {info.get('language', 'N/A')}")
         lines.append(f"- **License**: {info.get('license', {}).get('name', 'N/A') if info.get('license') else 'N/A'}")
         lines.append(f"- **URL**: https://github.com/{owner_repo}\n")
 
-    # README summary (first 1000 chars)
+    # README summary (first 3000 chars to get more context)
     if readme:
         lines.append("## README (excerpt)\n")
-        lines.append(readme[:1500])
-        if len(readme) > 1500:
+        lines.append(readme[:3000])
+        if len(readme) > 3000:
             lines.append(f"\n*(truncated — {len(readme)} chars total)*")
         lines.append("")
 
     # Releases
     if releases:
         lines.append(f"## Recent Releases ({len(releases)})\n")
+        lines.append("When discussing releases in the script, be specific about *when* they happened (e.g., 'just last week', 'back in March') and mention the specific version number or tag if relevant to the features being discussed.\n")
         for rel in releases:
             tag = rel.get("tag_name", "?")
             name = rel.get("name", tag)
@@ -182,42 +185,16 @@ def main():
     else:
         lines.append("## Releases\n\n*(No releases found)*\n")
 
-    # Issues
-    if issues:
-        lines.append(f"## Hot Issues & Discussions ({len(issues)})\n")
-        for issue in issues:
-            title = issue.get("title", "Untitled")
-            number = issue.get("number", 0)
-            state = issue.get("state", "unknown")
-            comments_count = issue.get("comments", 0)
-            labels = ", ".join(l.get("name", "") for l in issue.get("labels", []))
-            is_pr = "pull_request" in issue
-            kind = "PR" if is_pr else "Issue"
-
-            lines.append(f"### #{number}: {title}")
-            lines.append(f"- **Type**: {kind} | **State**: {state} | **Comments**: {comments_count}")
-            if labels:
-                lines.append(f"- **Labels**: {labels}")
-
-            body = (issue.get("body") or "")[:400]
-            if body:
-                lines.append(f"- **Description**: {body}")
-
-            # Fetch top comments for high-engagement issues
-            if comments_count >= 3:
-                print(f"  Fetching comments for #{number}...")
-                comments = fetch_issue_comments(owner_repo, number, limit=5)
-                if comments:
-                    lines.append("\n**Top Comments:**\n")
-                    for c in comments:
-                        user = c.get("user", {}).get("login", "anon")
-                        text = (c.get("body") or "")[:300]
-                        lines.append(f"**{user}**: {text}\n")
-                time.sleep(0.3)
-
-            lines.append("")
-    else:
-        lines.append("## Issues\n\n*(No issues found)*\n")
+    # Repository Structure
+    if tree_paths:
+        lines.append("## Codebase Structure\n")
+        lines.append("Here is an overview of the key files and directories in the repository to understand how it is organized:\n")
+        lines.append("```text")
+        for path in tree_paths:
+            lines.append(path)
+        if len(tree_paths) == 200:
+            lines.append("... (truncated)")
+        lines.append("```\n")
 
     lines.append("---\n")
 
@@ -226,7 +203,7 @@ def main():
         f.write("\n".join(lines))
 
     print(f"\n✅ Research saved to {out_path}")
-    print(f"   Releases: {len(releases)} | Issues: {len(issues)}")
+    print(f"   Releases: {len(releases)} | Files indexed: {len(tree_paths)}")
 
 
 if __name__ == "__main__":

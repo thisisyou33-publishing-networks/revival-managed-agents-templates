@@ -34,10 +34,10 @@ BASE_PROMPT = """You are a scriptwriter for "AI Talk Radio", a community radio s
 
 Write a ~3-minute radio script based on the research provided. The show has:
 
-**Host**: Paul (in the studio) — a calm, measured British moderator broadcasting from a London studio. Professional, intellectual, and polite.
+**Host**: Gemma Nye (in the studio) — a calm, measured British moderator broadcasting from a London studio. Professional, intellectual, and polite.
 
 **Format rules:**
-- Every line MUST start with a speaker name and colon: `Paul:` or `[CallerName]:`
+- Every line MUST start with a speaker name and colon: `Gemma Nye:` or `[CallerName]:`
 - You MUST include a gender tag `[Male]` or `[Female]` at the beginning of the transcript for every caller turn.
 - You MUST include an **accent tag** `[Accent: <accent_description>]` matching the location the caller is supposedly calling from (e.g., `[Accent: Irish]` if calling from Dublin, `[Accent: Southern US]` if from Texas, `[Accent: Australian]` from Sydney, etc.).
 - Example: `Caller1: [Male] [Accent: Irish] [hesitantly] I think...`
@@ -45,7 +45,7 @@ Write a ~3-minute radio script based on the research provided. The show has:
 - Use tags like `[sighs]`, `[frustratedly]`, `[calmly]`, `[whispers]`, `[indignantly]` to make performances rich.
 - **CRITICAL**: The callers are amateurs. They should sound rough, imperfect, and natural. They should NOT speak in perfect, complete sentences. They should cut themselves off, use fillers like "uh", "like", "you know".
 - **Tone**: Callers are smart, tech-savvy individuals (nerds), not experts but informed. Their speech is imperfect because it is spontaneous, not because they lack intelligence.
-- **Host Introduction**: Host Paul MUST always introduce a new caller by name and location before they speak for the first time.
+- **Host Introduction**: Host Gemma Nye MUST always introduce a new caller by name and location before they speak for the first time.
 - No stage directions outside of the audio tags in the transcript.
 - Keep sentences short and punchy — this is spoken word.
 - Target ~450-500 words total.
@@ -57,6 +57,7 @@ Write a ~3-minute radio script based on the research provided. The show has:
 - The research may come from any source (news, blogs, GitHub, papers, forums). Adapt your script to fit whatever content is provided.
 
 **CONTENT SAFETY — strictly off-limits:**
+- Do NOT use any profanity, cuss words, or explicit language.
 - Do NOT discuss politics, political parties, politicians, elections, legislation, or government policy.
 - Do NOT discuss international politics, geopolitics, wars, conflicts, sanctions, or diplomacy.
 - Do NOT discuss race, ethnicity, racial issues, stereotypes, or discrimination.
@@ -73,10 +74,10 @@ STYLE_PROMPTS = {
 **Callers**: For each topic, generate TWO callers representing opposing views. They should disagree respectfully but firmly.
 
 **Structure:**
-1. Cold Open (10 sec): Paul teases the most controversial take.
-2. Intro (15 sec): Paul welcomes listeners, sets up the debate format.
-3. Debate Segments (2.5 min): Paul introduces a topic, takes calls from two sides. Callers argue their positions, Paul moderates.
-4. Closing (15 sec): Paul summarizes both sides, thanks callers.""",
+1. Cold Open (10 sec): Gemma Nye teases the most controversial take.
+2. Intro (15 sec): Gemma Nye welcomes listeners, sets up the debate format.
+3. Debate Segments (2.5 min): Gemma Nye introduces a topic, takes calls from two sides. Callers argue their positions, Gemma Nye moderates.
+4. Closing (15 sec): Gemma Nye summarizes both sides, thanks callers.""",
 
     "roundtable": """
 **Style: ROUNDTABLE**
@@ -84,21 +85,21 @@ STYLE_PROMPTS = {
 **Callers**: 3-4 callers each bringing a different angle on the topic. Collaborative, building on each other's points rather than arguing.
 
 **Structure:**
-1. Cold Open (10 sec): Paul previews the topic.
-2. Intro (15 sec): Paul welcomes the panel and introduces each caller.
-3. Discussion (2.5 min): Open conversation — callers riff on each other's points, Paul guides the flow.
-4. Closing (15 sec): Paul ties the threads together.""",
+1. Cold Open (10 sec): Gemma Nye previews the topic.
+2. Intro (15 sec): Gemma Nye welcomes the panel and introduces each caller.
+3. Discussion (2.5 min): Open conversation — callers riff on each other's points, Gemma Nye guides the flow.
+4. Closing (15 sec): Gemma Nye ties the threads together.""",
 
     "interview": """
 **Style: INTERVIEW**
 
-**Callers**: 1-2 callers presented as people with direct experience or deep knowledge. Paul asks probing questions — this is more Q&A than conversation.
+**Callers**: 1-2 callers presented as people with direct experience or deep knowledge. Gemma Nye asks probing questions — this is more Q&A than conversation.
 
 **Structure:**
-1. Cold Open (10 sec): Paul teases what the guest will reveal.
-2. Intro (15 sec): Paul introduces the guest(s) and their background.
-3. Interview (2.5 min): Paul asks questions, guest(s) answer in depth. Follow-up questions encouraged.
-4. Closing (15 sec): Paul thanks the guest(s) and summarizes key takeaways.""",
+1. Cold Open (10 sec): Gemma Nye teases what the guest will reveal.
+2. Intro (15 sec): Gemma Nye introduces the guest(s) and their background.
+3. Interview (2.5 min): Gemma Nye asks questions, guest(s) answer in depth. Follow-up questions encouraged.
+4. Closing (15 sec): Gemma Nye thanks the guest(s) and summarizes key takeaways.""",
 
     "explainer": """
 **Style: EXPLAINER**
@@ -106,10 +107,10 @@ STYLE_PROMPTS = {
 **Callers**: 2-3 callers who each explain a different aspect of the topic. Think of it as a collaborative "teach the audience" format.
 
 **Structure:**
-1. Cold Open (10 sec): Paul poses a question the audience might be wondering.
-2. Intro (15 sec): Paul sets up the topic and says we have people who can break it down.
-3. Explainer Segments (2.5 min): Each caller explains their piece. Paul asks clarifying questions on behalf of the audience.
-4. Closing (15 sec): Paul recaps the key points.""",
+1. Cold Open (10 sec): Gemma Nye poses a question the audience might be wondering.
+2. Intro (15 sec): Gemma Nye sets up the topic and says we have people who can break it down.
+3. Explainer Segments (2.5 min): Each caller explains their piece. Gemma Nye asks clarifying questions on behalf of the audience.
+4. Closing (15 sec): Gemma Nye recaps the key points.""",
 }
 
 # Default style when none specified
@@ -165,6 +166,10 @@ def main():
     style_prompt = STYLE_PROMPTS[args.style].replace("2.5 min", main_seg_str)
 
     system_prompt = modified_base_prompt + style_prompt
+
+    # Conditionally add Hacker News credit if it's in the research
+    if "Hacker News" in research:
+        system_prompt += "\n\n**CRITICAL INSTRUCTION**: The research provided comes from Hacker News. The host MUST explicitly mention and give credit to Hacker News during the show."
 
     print(f"=== AI Talk Radio: Script Generation ===\n")
     print(f"Style: {args.style}")
