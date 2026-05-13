@@ -92,7 +92,7 @@ def fetch_repo_tree(owner_repo, default_branch="main"):
                 continue
             
             # Only include directories and common code files to keep the list concise
-            if item.get("type") == "tree" or path.endswith((".py", ".js", ".ts", ".tsx", ".jsx", ".md", ".json", ".yml", ".yaml", ".html", ".css", ".rs", ".go", ".java", ".cpp", ".c", ".h")):
+            if item.get("type") == "tree" or path.endswith((".py", ".js", ".ts", ".tsx", ".jsx", ".md", ".json", ".yml", ".yaml", ".html", ".css", ".rs", ".go", ".java", ".cpp", ".c", ".h", ".rb", ".php", ".swift", ".kt", ".scala")):
                 paths.append(path)
                 
         return paths[:200] # Limit to 200 paths to avoid massive outputs
