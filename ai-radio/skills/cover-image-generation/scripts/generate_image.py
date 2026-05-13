@@ -39,8 +39,10 @@ PROMPT_STYLES = [
     ". The background is a vintage-inspired design with a sepia tone, subtle film grain, and abstract circular shapes overlapping, creating a nostalgic and timeless aesthetic."
 ]
 
-def generate_image(prompt, output_path, reference=None, aspect_ratio="1:1"):
+def generate_image(prompt, output_path, reference=None):
     client = genai.Client()
+
+    prompt = prompt + " Image must be a 1:1 aspect ratio."
 
     print(f"Generating image with prompt: '{prompt}'")
 
@@ -66,8 +68,7 @@ def generate_image(prompt, output_path, reference=None, aspect_ratio="1:1"):
                 model=model_name,
                 input=input_content,
                 response_format={
-                    "type": "image",
-                    "aspect_ratio": aspect_ratio
+                    "type": "image"
                 }
             )
 
@@ -107,7 +108,6 @@ def main():
     parser.add_argument("--metadata", help="Path to show_notes.json metadata file")
     parser.add_argument("--output", help="Output image path")
     parser.add_argument("--reference", help="Reference image path for consistency")
-    parser.add_argument("--aspect_ratio", default="1:1", help="Aspect ratio (e.g., 1:1, 16:9)")
     args = parser.parse_args()
 
     if not args.prompt and not args.metadata:
@@ -136,7 +136,7 @@ def main():
     if not output_path:
         output_path = os.path.join(args.workspace, "images", "cover.png")
 
-    success = generate_image(prompt, output_path, reference=args.reference, aspect_ratio=args.aspect_ratio)
+    success = generate_image(prompt, output_path, reference=args.reference)
     if not success:
         sys.exit(1)
 
