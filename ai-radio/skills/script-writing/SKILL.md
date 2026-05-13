@@ -5,7 +5,7 @@ description: Generate the AI Talk Radio show script from research using the Inte
 
 # Script Writing
 
-Generate a naturalistic, multi-character radio show script directly via the LLM. The script features host Paul taking calls from people around the world, with advanced audio tags.
+Generate a naturalistic, multi-character radio show script directly via the LLM. The script features host Gemma Nye taking calls from people around the world, with advanced audio tags.
 
 ## Embedded Script
 
@@ -24,10 +24,10 @@ python3 skills/script-writing/scripts/generate_script.py --workspace ./workspace
 
 | Style | Callers | Format | Use when user says... |
 |-------|---------|--------|----------------------|
-| `debate` | 2 per topic, opposing views | Structured back-and-forth, Paul moderates | "opposing views", "debate", "both sides" |
+| `debate` | 2 per topic, opposing views | Structured back-and-forth, Gemma Nye moderates | "opposing views", "debate", "both sides" |
 | `roundtable` | 3-4, different angles | Collaborative discussion, callers build on each other | "roundtable", "panel", "discussion" |
-| `interview` | 1-2 with direct experience | Q&A format, Paul asks probing questions | "interview", "deep dive", "expert" |
-| `explainer` | 2-3, each explains an aspect | Teach the audience, Paul asks clarifying questions | "explain", "break it down", "what is" |
+| `interview` | 1-2 with direct experience | Q&A format, Gemma Nye asks probing questions | "interview", "deep dive", "expert" |
+| `explainer` | 2-3, each explains an aspect | Teach the audience, Gemma Nye asks clarifying questions | "explain", "break it down", "what is" |
 | `default` | Same as `debate` | Default when no style specified | *(anything else)* |
 
 ### Examples
@@ -69,7 +69,7 @@ python3 skills/script-writing/scripts/generate_script.py \
 
 | Speaker | Role | Personality |
 |---------|------|-------------|
-| **Paul** | Host | Professional but relatable British moderator |
+| **Gemma Nye** | Host | Professional but relatable British moderator |
 | **Callers** | Call-ins | Amateur, rough, natural — from various cities around the world |
 
 ## Script Format Rules
