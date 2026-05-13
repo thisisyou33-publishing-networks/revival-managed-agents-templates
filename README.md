@@ -1,8 +1,5 @@
 # Gemini Managed Agents Templates
 
-> [!CAUTION]
-> **Disclaimer**: This is not a supported Google product.
-
 This repository contains a collection of templates for building and deploying Gemini Managed Agents using the Gemini API. These templates demonstrate the power of the Gemini API sandbox, including code execution, filesystem operations, and web search.
 
 ## Available Templates
@@ -40,6 +37,14 @@ To run a prober:
 The script will call `../generate_payload.py` to construct the payload dynamically and then use `curl` to make the API request.
 
 
-## Disclaimer
+## Licensing & Disclaimer
 
-**This is not an official Google product.** It is maintained by the community and Google engineers as an open-source project under the Apache 2.0 License.
+Copyright 2026 Google LLC  
+
+All software is licensed under the Apache License, Version 2.0 (Apache 2.0); you may not use this file except in compliance with the Apache 2.0 license. You may obtain a copy of the Apache 2.0 license at: [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+All other materials are licensed under the Creative Commons Attribution 4.0 International License (CC-BY). You may obtain a copy of the CC-BY license at: [https://creativecommons.org/licenses/by/4.0/legalcode](https://creativecommons.org/licenses/by/4.0/legalcode)
+
+Unless required by applicable law or agreed to in writing, all software and materials distributed here under the Apache 2.0 or CC-BY licenses are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the licenses for the specific language governing permissions and limitations under those licenses.
+
+This is not an official Google product.
