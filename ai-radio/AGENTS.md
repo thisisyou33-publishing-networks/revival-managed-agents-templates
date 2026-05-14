@@ -9,10 +9,9 @@ All work is performed in the `./workspace` directory. All paths are relative to 
 ## Before You Do Anything
 
 > [!NOTE]
-> The API key is automatically injected into your prompt. You must export it as an environment variable before running any scripts:
-> ```bash
-> export GEMINI_API_KEY="<key_from_prompt>"
-> ```
+> The platform automatically injects the correct API key at the network level when scripts run.
+> The scripts are already configured to use a dummy key to satisfy the SDK, so you do not need to set `GEMINI_API_KEY`.
+> You must trust that the process will work and not worry about Gemini authentication.
 
 1. Immediately install required libraries:
    ```bash

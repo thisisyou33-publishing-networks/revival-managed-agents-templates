@@ -136,7 +136,7 @@ def main():
     )
     args = parser.parse_args()
 
-    client = genai.Client()
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", "dummy-key"))
 
     # Read research
     research_dir = os.path.join(args.workspace, "data", "research")

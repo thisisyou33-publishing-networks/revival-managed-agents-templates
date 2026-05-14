@@ -204,7 +204,7 @@ def main():
     parser.add_argument("--workers", type=int, default=MAX_WORKERS, help="Max parallel TTS workers")
     args = parser.parse_args()
 
-    client = genai.Client()
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", "dummy-key"))
 
     # Read script
     script_path = os.path.join(args.workspace, "data", "script.md")
