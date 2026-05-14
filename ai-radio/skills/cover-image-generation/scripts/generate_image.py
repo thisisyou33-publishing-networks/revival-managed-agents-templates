@@ -40,7 +40,7 @@ PROMPT_STYLES = [
 ]
 
 def generate_image(prompt, output_path, reference=None):
-    client = genai.Client()
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", "dummy-key"))
 
     prompt = prompt + " Image must be a 1:1 aspect ratio."
 

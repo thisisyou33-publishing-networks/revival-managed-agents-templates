@@ -23,7 +23,7 @@ def main():
     parser.add_argument("--workspace", default="workspace", help="Workspace directory")
     args = parser.parse_args()
 
-    client = genai.Client()
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", "dummy-key"))
 
     # Paths
     transcript_path = os.path.join(args.workspace, "data", "script.md")

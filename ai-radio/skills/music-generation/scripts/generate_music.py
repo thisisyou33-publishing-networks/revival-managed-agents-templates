@@ -74,7 +74,7 @@ def main():
     )
     args = parser.parse_args()
 
-    client = genai.Client()
+    client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY", "dummy-key"))
     out_dir = os.path.join(args.workspace, "audio", "music")
     os.makedirs(out_dir, exist_ok=True)
 
