@@ -1,6 +1,6 @@
 id: repo-maintainer
 base_agent: antigravity-preview-05-2026
-description: "Agent to understand a repository, identify top issues, and generate .patch files to fix them. Supports analyzing repo structure and answering high-level questions about issues."
+description: "Analyzes your codebase to identify issues, answer questions, and generate bug-fixing patches."
 tools:
   - type: code_execution
 environment:
