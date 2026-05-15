@@ -10,7 +10,7 @@ Generate background music for the radio show using the Lyria model via the **Int
 ## Embedded Script
 
 ```bash
-python3 skills/music-generation/scripts/generate_music.py --workspace ./workspace --mood news
+python3 skills/music-generation/scripts/generate_music.py --workspace ./workspace --mood tech
 ```
 
 ### Arguments
@@ -24,9 +24,8 @@ python3 skills/music-generation/scripts/generate_music.py --workspace ./workspac
 
 | Mood | Style | Pair with `--style` |
 |------|-------|---------------------|
-| `news` (default) | Urgent synth pulses, driving beat, BBC breaking news vibe | `debate` |
+| `tech` (default) | Clean synths, electronic pulse, Silicon Valley startup vibe | `explainer`, `debate` |
 | `chill` | Soft pads, gentle piano, lo-fi warmth | `roundtable`, `explainer` |
-| `tech` | Clean synths, electronic pulse, Silicon Valley startup vibe | `explainer` |
 | `debate` | Building tension, brass-like synths, panel discussion opener | `debate`, `interview` |
 
 ### What it does

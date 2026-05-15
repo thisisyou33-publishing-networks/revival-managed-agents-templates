@@ -41,7 +41,7 @@ warnings.filterwarnings("ignore", message="Interactions usage is experimental")
 
 # Voice mapping — each speaker gets a unique Gemini TTS voice
 VOICE_MAP = {
-    "Gemma Nye": "Aoede",     # Host — studio quality female voice
+    "Paul": "Puck",     # Host — studio quality male voice
 }
 
 FEMALE_VOICES = ["Kore"]
@@ -51,9 +51,9 @@ MAX_RETRIES = 3
 MAX_WORKERS = 8
 
 PROFILES = {
-    "Gemma Nye": {
-        "profile": "# AUDIO PROFILE: Gemma Nye\n## Role: Community Radio Host\n## Persona: Professional, warm, and engaging British radio host.",
-        "scene": "## THE SCENE: The London Studio\nA professional studio in London. Gemma Nye is sitting comfortably, speaking into a high-quality microphone with a warm and authoritative tone.",
+    "Paul": {
+        "profile": "# AUDIO PROFILE: Paul\n## Role: Community Radio Host\n## Persona: Professional, warm, and engaging British radio host.",
+        "scene": "## THE SCENE: The London Studio\nA professional studio in London. Paul is sitting comfortably, speaking into a high-quality microphone with a warm and authoritative tone.",
         "notes": "### DIRECTOR'S NOTES\nStyle: Professional, warm, engaging, and measured.\nPacing: Steady but dynamic.\nAccent: British English accent as heard in London, England.",
     },
     "default_caller": {
@@ -183,8 +183,8 @@ def process_turn(client, turn_index, speaker, text, voice, accent, segments_dir,
         print(f"    [{turn_index}] ✗ All {MAX_RETRIES} attempts failed, skipping")
         return (turn_index, None)
 
-    # Apply telephone filter for callers (not Gemma Nye)
-    if speaker != "Gemma Nye":
+    # Apply telephone filter for callers (not Paul)
+    if speaker != "Paul":
         try:
             apply_telephone_filter(raw_path, final_path, boost=boost)
             print(f"    [{turn_index}] ✓ {speaker} ({voice}) + telephone filter{' (boosted)' if boost else ''}")
@@ -220,8 +220,8 @@ def main():
     os.makedirs(segments_dir, exist_ok=True)
 
     # --- Phase 1: Parse all turns and assign voices (sequential) ---
-    assigned_voices = {"Gemma Nye": "Aoede"}
-    assigned_accents = {"Gemma Nye": "British English accent as heard in London, England"}
+    assigned_voices = {"Paul": "Puck"}
+    assigned_accents = {"Paul": "British English accent as heard in London, England"}
     female_index = 0
     male_index = 0
     prepared_turns = []
