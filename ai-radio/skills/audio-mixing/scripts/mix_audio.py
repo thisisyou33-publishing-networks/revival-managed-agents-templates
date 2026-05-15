@@ -58,6 +58,7 @@ def main():
     if has_music:
         print("Loading background music...")
         music = AudioSegment.from_mp3(music_path)
+        speech = AudioSegment.silent(duration=500) + speech
 
         # Intro music (15s)
         intro_music = music[:15000]
@@ -72,7 +73,7 @@ def main():
         # Overlay speech on music
         print("Mixing speech + music (intro and outro)...")
         combined = speech.overlay(intro_music, position=0)
-        
+
         outro_position = len(speech) - 15000
         if outro_position < 0:
             outro_position = 0

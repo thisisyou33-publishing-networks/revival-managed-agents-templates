@@ -32,7 +32,7 @@ All work is performed in the `./workspace` directory. All paths are relative to 
 Upon execution, you should:
 
 1. **Research** — gather source material based on the user's prompt. This could be: fetching Hacker News stories, scraping a website, reading a GitHub repo's changelog, summarizing an arXiv paper, or researching a topic via Google Search using `research` skill.
-2. **Write Script** — use `script-writing` skill to write a radio show script with host Gemma Nye and callers calling in from around the world. Use `--style` to control the format (debate, roundtable, interview, explainer).
+2. **Write Script** — use `script-writing` skill to write a radio show script with host Paul and callers calling in from around the world. Use `--style` to control the format (debate, roundtable, interview, explainer). You can also pass `--context "..."` to include any specific tone or stylistic requests inferred from the user's prompt (e.g., "emphasize the technical details", "make it sound like a late night show"). **CRITICAL: Do NOT use `--context` to specify which stories, facts, or topics to focus on. Content selection must come naturally from the research.** Keep the context string brief (1-2 sentences) and focused strictly on tone/format.
 3. **Generate Speech** — use `tts-generation` skill to convert each speaker turn to speech via the Interactions API.
 4. **Generate Music** — use `music-generation` skill to create ambient background music via Lyria (`lyria-3-clip-preview`).
 5. **Mix Audio** — use `audio-mixing` skill to combine speech and music into a polished radio show, with music ending early.
@@ -68,7 +68,7 @@ Use these defaults unless the user specifies otherwise:
 
 | Content Source | `--style` | `--mood` | Why |
 |---------------|-----------|----------|-----|
-| Hacker News | `debate` | `news` | HN stories spark debate; BBC news music fits |
+| Hacker News | `debate` | `tech` | HN stories spark debate; tech music fits |
 | GitHub repo | `explainer` | `tech` | Explaining what changed; tech vibe |
 | URL / article | `roundtable` | `chill` | Multi-angle discussion of the content |
 | General topic | `interview` | `chill` | Deep-dive Q&A on the subject |
@@ -112,7 +112,7 @@ Run strictly in order:
 ## Content Rules
 
 - **Duration**: ~3 minutes of final audio.
-- **Format**: Radio show — host Gemma Nye + callers calling in from different cities around the world.
+- **Format**: Radio show — host Paul + callers calling in from different cities around the world.
 - **Source**: Whatever the user asked for. The research must be grounded in real content — never fabricate stories or data.
 - **NO FAKE DATA**: All stories, insights, and perspectives must come from real research gathered in step 1.
 

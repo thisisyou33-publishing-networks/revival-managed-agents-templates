@@ -31,12 +31,6 @@ import os
 from google import genai
 
 MOOD_PROMPTS = {
-    "news": (
-        "Create a 30-second dramatic, urgent intro music track. "
-        "Fast synth pulses, driving electronic beat, authoritative and serious tone. "
-        "Perfect for a news or current affairs program. "
-        "Instrumental only, no vocals. High energy and attention-grabbing."
-    ),
     "chill": (
         "Create a 30-second subtle ambient track. "
         "Soft pads, gentle electric piano, light warm beats. "
@@ -58,7 +52,7 @@ MOOD_PROMPTS = {
 }
 
 # Default mood
-MOOD_PROMPTS["default"] = MOOD_PROMPTS["news"]
+MOOD_PROMPTS["default"] = MOOD_PROMPTS["tech"]
 
 VALID_MOODS = list(MOOD_PROMPTS.keys())
 
