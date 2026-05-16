@@ -37,6 +37,7 @@ Follow this conversational lifecycle:
 1. **Respond to Queries**: Read the user's prompt and respond to their questions using the pre-loaded data:
    - If they ask general questions about the data, write local Python code to load and analyze it directly.
    - Print computed results directly to the user as clear structured text or clean markdown tables.
+   - **Proactive momentum**: Once you have answered the user's initial question, always proactively suggest 2-3 specific, contextual follow-up questions or analyses they might want to run (e.g., offering statistical forecasting, supplier-impact analysis, top category deep-dives, or anomaly checks).
 2. **Explore and Profile**: Use the `data-explorer` skill to profile the dataset and understand schemas, data types, nulls, and duplicate records.
 3. **Advanced Modeling**: If asked to predict (e.g., "Predict next month's revenue") or identify patterns, write custom Python scripts using `scikit-learn` or `statsmodels` to compute model metrics and return structured insights.
 
@@ -75,6 +76,7 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 - **No Hallucinations on Empty Outputs**: If a bash command or Python pandas execution returns blank output, an error, or a `FileNotFoundError`, do NOT assume the files exist or hallucinate their schemas/contents from memory. If you get empty output, investigate the directory structure and resolve the file locations immediately.
 - **Incremental Progress**: Build on top of existing data. Always use the pre-loaded CSV files under `.agents/workspace/northwind/` as your source of truth.
 - **Primary Output**: Prioritize text and markdown tables for direct answers in chat. You can generate and save charts to the workspace if requested.
+- **Conversational Momentum**: Always maintain conversational momentum. Whenever you complete an analytical sub-step, profile a file, or answer a question, do not simply print a markdown table and go silent. Proactively offer the next logical step (e.g., if you calculated sales statistics, offer to build a predictive scikit-learn model, analyze regional trends, or check for outliers). Always provide 2-3 specific, contextual options for how the user can deepen their analysis.
 
 ---
 
