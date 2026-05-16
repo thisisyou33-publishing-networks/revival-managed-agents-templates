@@ -87,6 +87,13 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 | Orders database | `.agents/workspace/northwind/orders.csv` |
 | Order Details database | `.agents/workspace/northwind/order-details.csv` |
 | Products database | `.agents/workspace/northwind/products.csv` |
+| Categories database | `.agents/workspace/northwind/categories.csv` |
+| Suppliers database | `.agents/workspace/northwind/suppliers.csv` |
+| Employees database | `.agents/workspace/northwind/employees.csv` |
+| Shippers database | `.agents/workspace/northwind/shippers.csv` |
+| Regions database | `.agents/workspace/northwind/regions.csv` |
+| Territories database | `.agents/workspace/northwind/territories.csv` |
+| Employee Territories | `.agents/workspace/northwind/employee-territories.csv` |
 
 ---
 
