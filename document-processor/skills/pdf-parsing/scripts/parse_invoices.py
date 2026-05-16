@@ -103,61 +103,31 @@ def clean_response(text):
     return text.strip()
 
 
-def extract_gemini_text(client, text):
-    """Extract structured data from raw text using Gemini Interactions API."""
-    prompt = EXTRACTION_FROM_TEXT_PROMPT.format(text=text)
-    
+def extract_gemini(client, prompt, uploaded_file=None, mime_type=None, input_type=None):
+    """Call Gemini Interactions API to extract structured invoice data."""
+    inputs = [{"type": "text", "text": prompt}]
+    if uploaded_file:
+        inputs.append({"type": input_type, "uri": uploaded_file.uri, "mime_type": mime_type})
+
     interaction = client.interactions.create(
         model="gemini-3-flash-preview",
-        input=prompt,
+        input=inputs,
     )
-    
+
     response_text = ""
     if hasattr(interaction, "steps") and interaction.steps and interaction.steps[-1].content:
         response_text = interaction.steps[-1].content[0].text
-        
+
     cleaned_json = clean_response(response_text)
     data = json.loads(cleaned_json)
-    
+
     # Normalize amount to float
     if data.get("amount") is not None:
         try:
             data["amount"] = float(data["amount"])
         except (ValueError, TypeError):
             data["amount"] = 0.0
-            
-    return data
 
-
-def extract_gemini_vision(client, file_path, mime_type, input_type):
-    """Upload document and extract structured data visually using Gemini API."""
-    # 1. Upload file using Files API
-    uploaded_file = client.files.upload(file=file_path)
-    print(f"    Uploaded as {uploaded_file.name}")
-    
-    # 2. Extract data via Interactions API
-    interaction = client.interactions.create(
-        model="gemini-3-flash-preview",
-        input=[
-            {"type": "text", "text": EXTRACTION_PROMPT},
-            {"type": input_type, "uri": uploaded_file.uri, "mime_type": mime_type},
-        ],
-    )
-    
-    response_text = ""
-    if hasattr(interaction, "steps") and interaction.steps and interaction.steps[-1].content:
-        response_text = interaction.steps[-1].content[0].text
-        
-    cleaned_json = clean_response(response_text)
-    data = json.loads(cleaned_json)
-    
-    # Normalize amount to float
-    if data.get("amount") is not None:
-        try:
-            data["amount"] = float(data["amount"])
-        except (ValueError, TypeError):
-            data["amount"] = 0.0
-            
     return data
 
 
@@ -173,7 +143,8 @@ def extract_invoice_data(client, invoice_path):
         pdf_text = extract_pypdf(invoice_path)
         if pdf_text and len(pdf_text) > 10:
             print(f"    ✅ Local text extracted ({len(pdf_text)} chars). Calling Gemini for structured parsing...")
-            data = extract_gemini_text(client, pdf_text)
+            prompt = EXTRACTION_FROM_TEXT_PROMPT.format(text=pdf_text)
+            data = extract_gemini(client, prompt)
             data["source_file"] = os.path.basename(invoice_path)
             print(f"    ✅ Extracted via text: {data.get('merchant_name', 'Unknown')} — ${data.get('amount', 0):.2f}")
             return data
@@ -181,6 +152,10 @@ def extract_invoice_data(client, invoice_path):
             print("    ⚠️  No text extractable from PDF. Falling back to visual Gemini parsing...")
 
     # Default visual parsing (already implemented)
+    # Upload file
+    uploaded_file = client.files.upload(file=invoice_path)
+    print(f"    Uploaded as {uploaded_file.name}")
+
     type_map = {
         ".pdf": ("application/pdf", "document"),
         ".png": ("image/png", "image"),
@@ -189,7 +164,7 @@ def extract_invoice_data(client, invoice_path):
     }
     mime_type, input_type = type_map.get(ext, ("application/octet-stream", "document"))
 
-    data = extract_gemini_vision(client, invoice_path, mime_type, input_type)
+    data = extract_gemini(client, EXTRACTION_PROMPT, uploaded_file, mime_type, input_type)
     data["source_file"] = os.path.basename(invoice_path)
     print(f"    ✅ Extracted visually: {data.get('merchant_name', 'Unknown')} — ${data.get('amount', 0):.2f}")
     return data
