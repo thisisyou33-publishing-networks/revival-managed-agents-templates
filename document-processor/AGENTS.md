@@ -20,11 +20,14 @@ All work is performed in the `./workspace` directory. All paths are relative to 
 
 ## Workflow
 
+> [!IMPORTANT]
+> **Bias for Action**: Do NOT ask for approval before executing commands, running scripts, or proceeding to the next step. Proceed autonomously unless there is a material ambiguity or a critical decision that strictly requires user input.
+
 > [!TIP]
 > **Maximize Speed & Reduce Calls**:
 > - Read all necessary `SKILL.md` files (in the /.agents/skills directory) at once using a single bash command (`cat /.agents/skills/*/SKILL.md`).
 > - Do not use `list_files` to verify directories, script paths, or output files—trust the documentation and the script success logs.
-> - Chain sequential bash commands using `&&` in a single tool call (e.g., `python3 parse_invoices.py && python3 reconcile.py`).
+> - Chain sequential bash commands using `&&` in a single tool call.
 
 The Document Processor is a highly interactive, conversational assistant. Rather than executing a rigid chain of scripts, you must operate on-demand based strictly on the user's specific request and guide them through their data analysis.
 
@@ -32,9 +35,13 @@ Follow this conversational lifecycle:
 
 1. **Respond to Queries**: First, read the user's prompt and respond to their direct questions using your available data.
    - If they ask general questions about the **expenses** (e.g. `expenses.csv`), write local Python code to load and analyze it directly.
-   - If they ask any question that involves the **invoice files** (e.g. dates, merchant names, amounts, or counts of the documents), **first run the `pdf-parsing` skill (using `parse_invoices.py` script) to generate `{workspace}/parsed_invoices.json`** if it does not already exist. Then, write Python code to query the generated `parsed_invoices.json` database and answer their question.
+   - If they ask any question that involves the **invoice files** (e.g. dates, merchant names, amounts, or counts of the documents), **first run the `pdf-parsing` skill to generate `{workspace}/parsed_invoices.json`** if it does not already exist. Then, write Python code to query the generated `parsed_invoices.json` database and answer their question.
 2. **On-Demand Reconciliation**: If the user asks you to "reconcile expenses", "run reconciliation", or "check for discrepancies":
-   - **Step A: Parse Invoices**: Run the `pdf-parsing` skill (using `parse_invoices.py` script) to extract structured records from all PDFs/images into `{workspace}/parsed_invoices.json` (skip this if already up-to-date).
+   - **Step A: Parse Invoices**: For each invoice document in the workspace:
+     - **Always try local text extraction first**: Run `skills/pdf-parsing/scripts/extract_pypdf.py --file <file_path>`.
+       - **If successful**: Read the raw text output, and use your own language reasoning (LLM) to extract the structured fields (`merchant_name`, `date`, `amount`, `invoice_number`).
+       - **If it fails or returns no text**: Run the visual extraction fallback: `skills/pdf-parsing/scripts/extract_gemini.py --file <file_path>` to upload and parse the document visually using Gemini.
+     - Compile all structured invoice objects into a single JSON list and save it as `{workspace}/parsed_invoices.json` (skip this if already up-to-date).
    - **Step B: Reconcile**: Run the `reconciliation` skill (using the offline `reconcile.py` script) to perform matching and discrepancy analysis.
    - Present the summary findings and discrepancies directly to the user.
 3. **On-Demand Vendor Verification**: If the user asks to "verify vendors", "perform fraud check", or "check if merchants are real":
@@ -52,7 +59,9 @@ Follow this conversational lifecycle:
 
 ```
 User prompt
-  ├── 1. (On-Demand PDF Parsing) python3 /.agents/skills/pdf-parsing/scripts/parse_invoices.py --workspace ./workspace
+  ├── 1. (On-Demand PDF Parsing) Agent coordinates:
+  │       ├── python3 /.agents/skills/pdf-parsing/scripts/extract_pypdf.py --file <path> (Try first)
+  │       └── python3 /.agents/skills/pdf-parsing/scripts/extract_gemini.py --file <path> (Visual fallback)
   │       → {workspace}/parsed_invoices.json (Structured invoice database)
   ├── 2. (On-Demand Local Matching) python3 /.agents/skills/reconciliation/scripts/reconcile.py --workspace ./workspace
   │       → {workspace}/reconciliation_report.md
@@ -64,6 +73,14 @@ User prompt
           → {workspace}/reports/vendor_slideshow.html
 ```
 
+## API Surface
+
+All Gemini API calls use the **Interactions API** (`client.interactions.create()`), NOT `generateContent`:
+
+| Step | Model | API |
+|------|-------|-----|
+| Visual invoice data extraction | `gemini-3-flash-preview` | `interactions.create()` |
+| Narrative/slide generation | `gemini-3-flash-preview` | `interactions.create()` |
 
 ## Skills
 
@@ -71,7 +88,7 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 
 | Skill | Script(s) | Purpose |
 |-------|-----------|---------|
-| `pdf-parsing` | `parse_invoices.py` | Extract structured records from PDF/image files using Gemini |
+| `pdf-parsing` | `extract_pypdf.py`, `extract_gemini.py` | Standalone tools for local text extraction and visual Gemini extraction |
 | `reconciliation` | `reconcile.py` | Match expenses against invoices locally, flag discrepancies |
 | `slide-creator` | *(No script — prompt-based)* | Generate premium Google-style interactive HTML presentations |
 | `vendor-verification` | `verify_vendors.py` | Look up expense merchants in Wikidata open CC0 database |
