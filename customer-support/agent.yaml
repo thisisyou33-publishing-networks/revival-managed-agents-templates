@@ -1,16 +1,21 @@
 id: customer-support
 base_agent: antigravity-preview-05-2026
-description: "Scans any website to build a custom knowledge base and answer support questions using that content."
+description: "Scans allowlisted websites to build a custom knowledge base and answer support questions using that content."
 tools:
   - type: code_execution
   - type: google_search
 environment:
   type: "remote"
   sources: []
+  network:
+    allowlist:
+      - domain: "ai.google.dev"
+      - domain: "fastapi.tiangolo.com"
+      - domain: "antigravity.google"
 examples:
   - title: "Gemini API Support Bot"
-    prompt: "Index the Gemini API docs at ai.google.dev/gemini-api/docs and answer questions about rate limits, pricing, and available models."
+    prompt: "Build Gemini API customer support bot grounded with ai.google.dev/gemini-api/docs."
   - title: "FastAPI Support Bot"
-    prompt: "Index the FastAPI docs at fastapi.tiangolo.com and build a Q&A tool."
-  - title: "Firebase Support Bot"
-    prompt: "Index the Firebase documentation at https://firebase.google.com/docs and answer questions about Firestore security rules."
+    prompt: "Build FastAPI customer support bot grounded with fastapi.tiangolo.com."
+  - title: "Antigravity Support Bot"
+    prompt: "Build Antigravity customer support bot grounded with http://antigravity.google/docs/home."
