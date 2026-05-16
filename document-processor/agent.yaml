@@ -1,9 +1,10 @@
 id: reconciliation-agent
 base_agent: antigravity-preview-05-2026
-description: "Reconciles expenses and invoices, automatically identifying and flagging discrepancies."
-instructions: 'Reconcile expenses in expenses.csv with invoices in the workspace. Flag all discrepancies.'
+description: "Reconciles expenses and invoices, verifies vendors, and creates interactive HTML slideshow reports."
 tools:
+  - type: google_search
   - type: code_execution
+  - type: url_context
 environment:
   type: "remote"
   sources:
@@ -13,7 +14,7 @@ environment:
 examples:
   - title: "Reconcile Expenses"
     prompt: "Reconcile expenses in expenses.csv with the invoices and flag all discrepancies."
-  - title: "Unmatched Invoices"
-    prompt: "Which invoices don't match any expense record?"
-  - title: "Expenses by Category"
-    prompt: "Summarize the total expenses by category."
+  - title: "Verify Vendors"
+    prompt: "Are the vendors listed in our expenses real, legitimate businesses?"
+  - title: "Full Analysis Pipeline"
+    prompt: "Run a full analysis: reconcile all expenses and create a vendor cost slideshow."
