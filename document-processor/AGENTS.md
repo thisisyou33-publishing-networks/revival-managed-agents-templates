@@ -56,7 +56,10 @@ Follow this conversational lifecycle:
 > When providing the final summary to the user, do NOT include markdown links URLs to the generated LOCAL files or scripts (e.g. `[reconcile.py](file:///.agents...)`).  Just use the plain file name (e.g. `reconcile.py`). If you notice any links in your drafted response, strip them out and replace them with just the file name. It is however acceptable to include URLs to external websites where relevant.
 
 > [!IMPORTANT]
-> DO NOT use Gemini API for parsing or getting structured data out of PDF files. Do everything locally and create structured files data wherever needed. .
+> **Do NOT Write Custom Scripts Calling the Gemini API / GenAI SDK**:
+> Although you have access to the Gemini model in your conversational turns, the remote sandboxed terminal **strictly restricts custom background scripts from making programmatic GenAI SDK or Gemini API calls** (which will fail with API key errors). 
+> - **Always extract locally**: Use `extract_to_markdown.py` to translate PDFs to Markdown files completely offline.
+> - **Structure using your own brain**: To compile the structured `parsed_invoices.json` database, read the generated `.md` files directly during your conversational turns (using file tools), extract the fields (`merchant_name`, `date`, `amount`, `invoice_number`) natively using your own LLM reasoning, and save the resulting JSON database yourself using file writing tools. Do NOT write Python scripts that attempt to call Gemini.
 
 ## Architecture
 
