@@ -45,6 +45,18 @@ Return ONLY a valid JSON object with these keys:
 
 Return ONLY the JSON object. Do NOT wrap it in markdown code blocks."""
 
+EXTRACTION_FROM_TEXT_PROMPT = """Analyze the following text extracted from an invoice and extract these fields.
+Return ONLY a valid JSON object with these keys:
+- "date": the invoice date (string, any format found on the document)
+- "merchant_name": the vendor or merchant name
+- "amount": the total amount as a number (float, no currency symbols)
+- "invoice_number": the invoice or reference number (string, or null if not found)
+
+Invoice Text:
+{text}
+
+Return ONLY the JSON object. Do NOT wrap it in markdown code blocks."""
+
 
 def load_expenses(csv_path):
     """Load expenses from CSV file."""
@@ -77,30 +89,86 @@ def find_invoices(workspace):
     return sorted(invoice_files)
 
 
+def extract_pdf_text(pdf_path):
+    """Extract text from PDF using pypdf."""
+    try:
+        import pypdf
+        reader = pypdf.PdfReader(pdf_path)
+        text = ""
+        for page in reader.pages:
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text + "\n"
+        return text.strip()
+    except Exception as e:
+        print(f"    ⚠️  pypdf extraction failed for {os.path.basename(pdf_path)}: {e}")
+        return ""
+
+
 def extract_invoice_data(client, invoice_path):
-    """Upload invoice and extract structured data via Gemini."""
+    """Extract structured data from invoice, utilizing local pypdf for PDFs where possible."""
     print(f"  Processing invoice: {os.path.basename(invoice_path)}...")
 
+    ext = os.path.splitext(invoice_path)[1].lower()
+
+    # Try local text extraction if it's a PDF
+    if ext == ".pdf":
+        print("    Attempting local text extraction with pypdf...")
+        pdf_text = extract_pdf_text(invoice_path)
+        if pdf_text and len(pdf_text) > 10:
+            print(f"    ✅ Local text extracted ({len(pdf_text)} chars). Calling Gemini for structured parsing...")
+            prompt = EXTRACTION_FROM_TEXT_PROMPT.format(text=pdf_text)
+            interaction = client.interactions.create(
+                model="gemini-3-flash-preview",
+                input=prompt,
+            )
+            response_text = ""
+            if hasattr(interaction, "steps") and interaction.steps and interaction.steps[-1].content:
+                response_text = interaction.steps[-1].content[0].text
+
+            # Clean up potential markdown wrapping
+            response_text = response_text.strip()
+            if response_text.startswith("```json"):
+                response_text = response_text[7:]
+            if response_text.startswith("```"):
+                response_text = response_text[3:]
+            if response_text.endswith("```"):
+                response_text = response_text[:-3]
+            response_text = response_text.strip()
+
+            data = json.loads(response_text)
+            if data.get("amount") is not None:
+                try:
+                    data["amount"] = float(data["amount"])
+                except (ValueError, TypeError):
+                    data["amount"] = 0.0
+
+            data["source_file"] = os.path.basename(invoice_path)
+            print(f"    ✅ Extracted via text: {data.get('merchant_name', 'Unknown')} — ${data.get('amount', 0):.2f}")
+            return data
+        else:
+            print("    ⚠️  No text extractable from PDF. Falling back to visual Gemini parsing...")
+
+    # Default visual parsing (already implemented)
     # Upload file
     uploaded_file = client.files.upload(file=invoice_path)
     print(f"    Uploaded as {uploaded_file.name}")
 
-    # Determine MIME type
-    ext = os.path.splitext(invoice_path)[1].lower()
-    mime_map = {
-        ".pdf": "application/pdf",
-        ".png": "image/png",
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
+    # Determine MIME type and input type for Interactions API
+    type_map = {
+        ".pdf": ("application/pdf", "document"),
+        ".png": ("image/png", "image"),
+        ".jpg": ("image/jpeg", "image"),
+        ".jpeg": ("image/jpeg", "image"),
     }
-    mime_type = mime_map.get(ext, "application/octet-stream")
+    mime_type, input_type = type_map.get(ext, ("application/octet-stream", "document"))
 
     # Extract data via Interactions API
     interaction = client.interactions.create(
         model="gemini-3-flash-preview",
         input=[
             {"type": "text", "text": EXTRACTION_PROMPT},
-            {"type": "file", "uri": uploaded_file.uri, "mime_type": mime_type},
+            {"type": input_type, "uri": uploaded_file.uri, "mime_type": mime_type},
         ],
     )
 
@@ -128,7 +196,7 @@ def extract_invoice_data(client, invoice_path):
             data["amount"] = 0.0
 
     data["source_file"] = os.path.basename(invoice_path)
-    print(f"    ✅ Extracted: {data.get('merchant_name', 'Unknown')} — ${data.get('amount', 0):.2f}")
+    print(f"    ✅ Extracted visually: {data.get('merchant_name', 'Unknown')} — ${data.get('amount', 0):.2f}")
     return data
 
 
