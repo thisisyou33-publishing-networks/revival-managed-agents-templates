@@ -136,7 +136,11 @@ def normalize_merchant(name):
     """Normalize merchant name for comparison."""
     if not name:
         return ""
-    return name.lower().strip().replace(",", "").replace(".", "").replace("inc", "").replace("llc", "").strip()
+    # Remove punctuation and normalize to lowercase
+    name = name.lower().strip().replace(",", "").replace(".", "")
+    # Remove common business suffixes as whole words only
+    words = [w for w in name.split() if w not in ("inc", "llc")]
+    return " ".join(words)
 
 
 def merchants_match(name1, name2):
