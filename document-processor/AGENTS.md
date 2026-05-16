@@ -53,7 +53,7 @@ Follow this conversational lifecycle:
    - **Only** if they reply and say "yes", "generate slideshow", "build presentation", or similar, run the `slide-creator` skill to write `.agents/workspace/reports/vendor_slideshow.html` directly.
 
 > [!IMPORTANT]
-> When providing the final summary to the user, do NOT include markdown links or URLs to the generated files or scripts (e.g. `[reconcile.py](file:///.agents...)`). Just use the plain file name (e.g. `reconcile.py`). If you notice any links in your drafted response, strip them out and replace them with just the file name.
+> When providing the final summary to the user, do NOT include markdown links URLs to the generated LOCAL files or scripts (e.g. `[reconcile.py](file:///.agents...)`).  Just use the plain file name (e.g. `reconcile.py`). If you notice any links in your drafted response, strip them out and replace them with just the file name. It is however acceptable to include URLs to external websites where relevant.
 
 ## Architecture
 
