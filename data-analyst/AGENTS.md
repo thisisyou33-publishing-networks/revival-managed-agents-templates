@@ -30,26 +30,28 @@ All work is performed in the `.agents/workspace` directory. All paths are relati
 
 The Data Analyst is a highly interactive, conversational assistant. Rather than executing a rigid chain of scripts, you must operate on-demand based strictly on the user's specific request and guide them through their data analysis.
 
+The workspace is **natively pre-bootstrapped at start-up with a cleaned, properly formatted Northwind dataset** loaded directly into `.agents/workspace/data/`. You do not need to download or clone files.
+
 Follow this conversational lifecycle:
 
-1. **Bootstrap Data**: If the Northwind CSV files are not in `.agents/workspace/data/`, run the `northwind-data` skill to download them first before starting any analysis.
-2. **Respond to Queries**: Read the user's prompt and respond to their questions using available data:
+1. **Respond to Queries**: Read the user's prompt and respond to their questions using the pre-loaded data:
    - If they ask general questions about the data, write local Python code to load and analyze it directly.
    - Print computed results directly to the user as clear structured text or clean markdown tables.
-3. **Explore and Profile**: Use the `data-explorer` skill to profile the dataset and understand schemas, data types, nulls, and duplicate records.
-4. **Advanced Modeling**: If asked to predict (e.g., "Predict next month's revenue") or identify patterns, write custom Python scripts using `scikit-learn` or `statsmodels` to compute model metrics and return structured insights.
+2. **Explore and Profile**: Use the `data-explorer` skill to profile the dataset and understand schemas, data types, nulls, and duplicate records.
+3. **Advanced Modeling**: If asked to predict (e.g., "Predict next month's revenue") or identify patterns, write custom Python scripts using `scikit-learn` or `statsmodels` to compute model metrics and return structured insights.
 
 ---
 
 ## Architecture
 
 ```
+Workspace Bootstrapping (Done automatically by the platform at start-up from GCS)
+  → Clean, standard-compliant Northwind CSV files pre-loaded in .agents/workspace/data/
+
 User prompt
-  ├── 1. (On-Demand Bootstrapping) python3 /.agents/skills/northwind-data/scripts/download_northwind.py --workspace .agents/workspace
-  │       → Downloads and prepares Northwind CSV files inside .agents/workspace/data/
-  ├── 2. (On-Demand Data Profiling) Run python script using pandas
+  ├── 1. (On-Demand Data Profiling) Run python script using pandas
   │       → Generates structured JSON data profiles and schema recommendations
-  └── 3. (On-Demand Analysis) Run custom python scripts using pandas / scikit-learn
+  └── 2. (On-Demand Analysis) Run custom python scripts using pandas / scikit-learn
           → Performs joins, aggregations, stats, and builds ML models
           → Presents clear, structured text tables and insights directly to the user
 ```
@@ -62,7 +64,6 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 
 | Skill | Script(s) | Purpose |
 |-------|-----------|---------|
-| `northwind-data` | `download_northwind.py` | Bootstrap the workspace with Northwind CSV files |
 | `data-explorer` | *(No script — prompt-based)* | Profile tabular datasets and understand schemas, quality, and duplicate records |
 | `python-data` | *(No script — prompt-based)* | Run complex calculations, regressions, and ML models using pandas and scikit-learn |
 
@@ -71,9 +72,8 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 ## Execution Rules
 
 - **Strictly On-Demand**: Never run scripts or generate reports unless the user explicitly requests them.
-- **Strict Workspace Verification**: Before attempting to read, profile, or query any dataset, always list the data directory to verify the files are present. If `.agents/workspace/data/` is empty, you MUST execute the `northwind-data` bootstrap skill first.
 - **No Hallucinations on Empty Outputs**: If a bash command or Python pandas execution returns blank output, an error, or a `FileNotFoundError`, do NOT assume the files exist or hallucinate their schemas/contents from memory. If you get empty output, investigate the directory structure and resolve the file locations immediately.
-- **Incremental Progress**: Build on top of existing data. If CSV files already exist in `.agents/workspace/data/` from a previous turn, use them as your source of truth rather than re-running the download scripts.
+- **Incremental Progress**: Build on top of existing data. Always use the pre-loaded CSV files under `.agents/workspace/data/` as your source of truth.
 - **Primary Output**: Prioritize text and markdown tables for direct answers in chat. You can generate and save charts to the workspace if requested.
 
 ---
@@ -92,6 +92,5 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 
 ## Edge Cases
 
-- **Missing data directory**: Automatically trigger `northwind-data` bootstrap script.
 - **Corrupted or missing columns**: Log warnings and handle missing or malformed data gracefully.
 - **Empty datasets**: Terminate gracefully with an informative message.
