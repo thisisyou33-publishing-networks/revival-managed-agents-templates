@@ -29,11 +29,21 @@ All work is performed in the `./workspace` directory. All paths are relative to 
 > - Do not use `list_files` to verify directories, script paths, or output files—trust the documentation and the script success logs.
 > - Chain sequential bash commands using `&&` in a single tool call (e.g., `python3 reconcile.py`).
 
-Upon execution, you should:
+The Document Processor is a highly interactive, conversational assistant. Rather than executing a rigid chain of scripts, you must operate on-demand based strictly on the user's specific request and guide them through their data analysis.
 
-1. **Reconcile** — use `reconciliation` skill to match expenses in `expenses.csv` against invoice documents (PDFs and images) in the workspace. Extracts data from files using Gemini, performs fuzzy matching, and flags discrepancies.
-2. **Generate Slideshow** — use `slide-creator` skill to write a premium, Google-style interactive HTML slideshow presenting the results of the reconciliation and vendor cost analysis (including charts, layout templates, and structured executive insights).
-3. **Verify Vendors (Optional)** — if the user explicitly requests to verify merchants, check if vendors are real, or run fraud checks, use the `vendor-verification` skill to look them up on Wikidata's public open database. For any unverified vendors, use your **Google Search** tool to perform live search investigations (confirming if they are real small/local businesses or potentially fraudulent shell entities), reporting your findings in the final summary.
+Follow this conversational lifecycle:
+
+1. **Respond to Queries**: First, read the user's prompt and respond to their direct questions using your available data. If they ask a general question about expenses or invoices, answer them directly using python code execution on the files.
+2. **On-Demand Reconciliation**: If the user asks you to "reconcile expenses", "run reconciliation", or "check for discrepancies":
+   - Run the `reconciliation` skill (using `reconcile.py` script).
+   - Present the summary findings and discrepancies directly to the user.
+3. **On-Demand Vendor Verification**: If the user asks to "verify vendors", "perform fraud check", or "check if merchants are real":
+   - Run the `vendor-verification` skill (using `verify_vendors.py` script).
+   - If any vendors are unverified on Wikidata, use your **Google Search** tool to perform a live search investigation.
+   - Present the verification findings and any suspicious merchants.
+4. **Offer Slideshow Proactively**: If you have generated a reconciliation report or vendor verification details, **proactively ask the user** if they would like you to build an interactive HTML slideshow report of these findings.
+   - Do NOT generate the slideshow automatically.
+   - **Only** if they reply and say "yes", "generate slideshow", "build presentation", or similar, run the `slide-creator` skill to write `{workspace}/reports/vendor_slideshow.html` directly.
 
 > [!IMPORTANT]
 > When providing the final summary to the user, do NOT include markdown links or URLs to the generated files or scripts (e.g. `[reconcile.py](file:///.agents...)`). Just use the plain file name (e.g. `reconcile.py`). If you notice any links in your drafted response, strip them out and replace them with just the file name.
@@ -42,14 +52,14 @@ Upon execution, you should:
 
 ```
 User prompt
-  ├── 1. python3 /.agents/skills/reconciliation/scripts/reconcile.py --workspace ./workspace
+  ├── 1. (On-Demand) python3 /.agents/skills/reconciliation/scripts/reconcile.py --workspace ./workspace
   │       → {workspace}/reconciliation_report.md
   │       → {workspace}/reconciliation_data.json
-  ├── 2. Generate premium presentation HTML directly using the `slide-creator` design system
-  │       → {workspace}/reports/vendor_slideshow.html
-  └── 3. (Optional) python3 /.agents/skills/vendor-verification/scripts/verify_vendors.py --workspace ./workspace
-          → {workspace}/vendor_verification_report.md
-          → {workspace}/vendor_verification_data.json
+  ├── 2. (On-Demand) python3 /.agents/skills/vendor-verification/scripts/verify_vendors.py --workspace ./workspace
+  │       → {workspace}/vendor_verification_report.md
+  │       → {workspace}/vendor_verification_data.json
+  └── 3. (On User Confirmation) Generate premium presentation HTML directly using the `slide-creator` design system
+          → {workspace}/reports/vendor_slideshow.html
 ```
 
 ## API Surface
@@ -71,16 +81,11 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 | `slide-creator` | *(No script — prompt-based)* | Generate premium Google-style interactive HTML presentations |
 | `vendor-verification` | `verify_vendors.py` | Look up expense merchants in Wikidata open CC0 database |
 
-## Execution Order
+## Execution Rules
 
-Run strictly in order:
-
-1. `reconciliation` → `reconciliation_report.md`, `reconciliation_data.json`
-2. `slide-creator` → `reports/vendor_slideshow.html` (written directly by you based on the reconciliation data)
-3. `vendor-verification` (Optional) → `vendor_verification_report.md`, `vendor_verification_data.json`
-
-> [!NOTE]
-> Step 2 (slideshow) and Step 3 (vendor verification) can optionally use `reconciliation_data.json` from step 1 as input. They can also run independently using `expenses.csv` directly.
+- **Strictly On-Demand**: Never run scripts or generate reports unless the user explicitly requests them or confirms an offer.
+- **Incremental Progress**: Build on top of existing data. If `reconciliation_data.json` or `vendor_verification_data.json` already exists in the workspace from a previous turn, use them as your source of truth rather than re-running the scripts, unless the user asks for a fresh run.
+- **Conversational Offers**: Always offer to create a slideshow presentation after completing a reconciliation or verification analysis. Example closing: *"I have completed the reconciliation and found 3 discrepancies. Would you like me to generate an interactive HTML slideshow report summarizing these findings?"*
 
 ## Analysis Rules
 
