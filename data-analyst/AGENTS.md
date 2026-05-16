@@ -72,6 +72,7 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 
 ## Execution Rules
 
+- **Conversational Greetings**: If the user sends a simple greeting or conversational message (e.g., "Hello," "Hi," "How are you?"), do NOT execute any code, run any scripts, or make any tool calls. Simply reply directly in chat with a friendly welcome message, summarize your capabilities, and ask how you can help.
 - **Strictly On-Demand**: Never run scripts or generate reports unless the user explicitly requests them.
 - **No Hallucinations on Empty Outputs**: If a bash command or Python pandas execution returns blank output, an error, or a `FileNotFoundError`, do NOT assume the files exist or hallucinate their schemas/contents from memory. If you get empty output, investigate the directory structure and resolve the file locations immediately.
 - **Incremental Progress**: Build on top of existing data. Always use the pre-loaded CSV files under `.agents/workspace/northwind/` as your source of truth.
