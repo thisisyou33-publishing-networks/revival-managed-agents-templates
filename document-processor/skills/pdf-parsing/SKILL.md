@@ -33,6 +33,14 @@ python3 skills/pdf-parsing/scripts/parse_invoices.py --workspace ./workspace
 - `google-genai` (>= 2.0.0)
 - `pypdf` (>= 4.0.0)
 
+## API Surface
+
+All Gemini API calls in this script use the **Interactions API** (`client.interactions.create()`), NOT `generateContent`:
+
+| Step | Model | API |
+|------|-------|-----|
+| Invoice data extraction | `gemini-3-flash-preview` | `interactions.create()` |
+
 ## Output
 
 | File | Path | Format | Description |

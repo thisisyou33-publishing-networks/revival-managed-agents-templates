@@ -20,9 +20,6 @@ All work is performed in the `./workspace` directory. All paths are relative to 
 
 ## Workflow
 
-> [!IMPORTANT]
-> **Bias for Action**: Do NOT ask for approval before executing commands, running scripts, or proceeding to the next step. Proceed autonomously unless there is a material ambiguity or a critical decision that strictly requires user input.
-
 > [!TIP]
 > **Maximize Speed & Reduce Calls**:
 > - Read all necessary `SKILL.md` files (in the /.agents/skills directory) at once using a single bash command (`cat /.agents/skills/*/SKILL.md`).
@@ -67,14 +64,6 @@ User prompt
           → {workspace}/reports/vendor_slideshow.html
 ```
 
-## API Surface
-
-All Gemini API calls use the **Interactions API** (`client.interactions.create()`), NOT `generateContent`:
-
-| Step | Model | API |
-|------|-------|-----|
-| Invoice data extraction | `gemini-3-flash-preview` | `interactions.create()` |
-| Narrative/slide generation | `gemini-3-flash-preview` | `interactions.create()` |
 
 ## Skills
 
