@@ -1,7 +1,7 @@
 id: reconciliation-agent
 base_agent: antigravity-preview-05-2026
-description: "Reconciles expenses and invoices, automatically identifying and flagging discrepancies."
-instructions: 'Reconcile expenses in expenses.csv with invoices in the workspace. Flag all discrepancies.'
+description: "Reconciles expenses and invoices, generates vendor analysis videos, and creates HTML slideshow reports."
+instructions: 'Reconcile expenses in expenses.csv with invoices in the workspace. Flag all discrepancies. Generate vendor analysis outputs.'
 tools:
   - type: code_execution
 environment:
@@ -17,3 +17,9 @@ examples:
     prompt: "Which invoices don't match any expense record?"
   - title: "Expenses by Category"
     prompt: "Summarize the total expenses by category."
+  - title: "Top Vendor Video"
+    prompt: "Generate a video highlighting our highest-paid vendor."
+  - title: "Vendor Cost Slideshow"
+    prompt: "Create an HTML slideshow showing our top 3 highest-cost vendors."
+  - title: "Full Analysis Pipeline"
+    prompt: "Run a full analysis: reconcile all expenses, generate a top vendor video, and create a vendor cost slideshow."
