@@ -5,12 +5,12 @@ description: Records and appends every user-agent customer support interaction t
 
 # Memory Skill
 
-Use this skill to log conversations and important events, ensuring a historical record of all customer support interactions is maintained in `./workspace/memory.md`.
+Use this skill to log conversations and important events, ensuring a historical record of all customer support interactions is maintained in `.agents/workspace/memory.md`.
 
 ## Instructions for the Agent
 
 To record an interaction:
-1. Append the conversation or event details directly to `./workspace/memory.md` using your file writing capabilities. Create the file if it does not exist.
+1. Append the conversation or event details directly to `.agents/workspace/memory.md` using your file writing capabilities. Create the file if it does not exist.
 2. Format the entry using the following casual, clean layout:
 
 ```markdown

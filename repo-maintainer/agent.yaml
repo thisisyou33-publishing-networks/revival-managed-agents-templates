@@ -11,9 +11,9 @@ environment:
       - domain: "github.com"
       - domain: "api.github.com"
 examples:
-  - title: "Fix Critical Issue"
-    prompt: "Clone https://github.com/googleapis/python-genai, find the most critical open issue and generate a .patch file to fix it."
   - title: "Repo Overview"
     prompt: "Clone https://github.com/googleapis/python-genai and give me an overview of the repository structure and README."
+  - title: "Fix Critical Issue"
+    prompt: "Clone https://github.com/googleapis/python-genai, find the most critical open issue and generate a .patch file to fix it."
   - title: "Top Issues"
     prompt: "Clone https://github.com/googleapis/python-genai and tell me what the top issues are."

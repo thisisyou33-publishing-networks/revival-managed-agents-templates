@@ -165,7 +165,7 @@ def main():
     if not seed_url.startswith("http://") and not seed_url.startswith("https://"):
         seed_url = "https://" + seed_url
 
-    workspace_dir = "./workspace"
+    workspace_dir = ".agents/workspace"
     pages_dir = os.path.join(workspace_dir, "pages")
     snapshots_file = os.path.join(workspace_dir, "snapshots.json")
 

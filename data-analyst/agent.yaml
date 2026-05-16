@@ -6,8 +6,11 @@ tools:
   - type: google_search
 environment:
   type: "remote"
-  sources: []
-  network:
+  sources:
+    - type: "gcs"
+      source: "gs://templates-data/data-analyst"
+      target: ".agents/workspace"
+  network:  
     allowlist:
       - domain: "github.com"
       - domain: "pypi.org"
