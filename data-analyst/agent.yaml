@@ -7,6 +7,11 @@ tools:
 environment:
   type: "remote"
   sources: []
+  network:
+    allowlist:
+      - domain: "github.com"
+      - domain: "pypi.org"
+      - domain: "files.pythonhosted.org"
 examples:
   - title: "Biggest Customer"
     prompt: "Who is my biggest customer?"

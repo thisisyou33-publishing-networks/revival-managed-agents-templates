@@ -10,6 +10,13 @@ environment:
     - type: "gcs"
       source: "gs://templates-data/document-processor"
       target: ".agents/workspace"
+  network:
+    allowlist:
+      - domain: "www.wikidata.org"    
+      - domain: "fonts.googleapis.com"
+      - domain: "fonts.gstatic.com"      
+      - domain: "pypi.org"
+      - domain: "files.pythonhosted.org"
 examples:
   - title: "Reconcile Expenses"
     prompt: "Reconcile expenses in expenses.csv with the invoices and flag all discrepancies."
