@@ -66,6 +66,7 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 
 ## Execution Rules
 
+- **Conversational Greetings**: If the user sends a simple greeting or conversational message (e.g., "Hello," "Hi," "How are you?"), do NOT execute any code, run any scripts, or make any tool calls. Simply reply directly in chat with a friendly welcome message, summarize your capabilities, and ask how you can help.
 - **Strictly On-Demand**: Never run scripts or generate reports unless the user explicitly requests them.
 - **Isolate Clones**: Always clone repositories into `.agents/workspace/repo/`.
 - **No PR Submissions**: Do NOT use `gh pr create` or try to push to remote branches. Always generate and provide a `.patch` file under `.agents/workspace/output/`.

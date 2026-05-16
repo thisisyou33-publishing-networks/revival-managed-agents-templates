@@ -85,6 +85,7 @@ Each skill lives in `./skills/<name>/` with a `SKILL.md` (and optional helper sc
 
 ## Execution Rules
 
+- **Conversational Greetings**: If the user sends a simple greeting or conversational message (e.g., "Hello," "Hi," "How are you?"), do NOT execute any code, run any scripts, or make any tool calls. Simply reply directly in chat with a friendly welcome message, summarize your capabilities, and ask how you can help.
 - **Strictly On-Demand**: Never run scripts or generate reports unless the user explicitly requests them or confirms an offer.
 - **Isolate the Invoices/Pages**: Keep all crawled page Markdown files exclusively inside `.agents/workspace/pages/`.
 - **No Hallucinations on Missing Facts**: Do not make up prices, contact details, or policy details if they are not explicitly present in the crawled Markdown corpus.

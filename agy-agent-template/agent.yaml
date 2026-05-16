@@ -1,24 +1,25 @@
 id: "agy-agent-template"
 description: "A general-purpose autonomous agent running in a remote, Google-hosted Linux environment."
 base_agent: antigravity-preview-05-2026
-
 tools:
   - type: "code_execution"
   - type: "google_search"
   - type: "url_context"
-
 environment:
   type: "remote"
+  sources: []
   network:
     allowlist:
       - domain: "wttr.in"
-
+      - domain: "*.wikipedia.org"
+      - domain: "pypi.org"
+      - domain: "files.pythonhosted.org"
 examples:
   - title: "Explore Environment"
     prompt: "Use bash commands to explore your environment. Find out what OS and kernel version you are running, check the CPU and memory resources, and see if common tools like Python, pip, and curl are installed."
 
-  - title: "Build Antigravity Game"
-    prompt: "Create a complete, single-file interactive HTML5/JavaScript game themed around 'Antigravity' (e.g., a simple physics-based game where you control a spaceship avoiding gravity wells or using antigravity pulses to navigate). Save it as 'antigravity_game.html' in your workspace so I can open and play it."
-
   - title: "Weather Dashboard"
-    prompt: "Fetch the current weather and 3-day forecast for Tokyo and New York from wttr.in (using format=j1 for JSON), parse the data using Python, and generate an interactive HTML dashboard with clean CSS styling saved as 'weather_dashboard.html'."
+    prompt: "Fetch the current weather and 3-day forecast for London and Ankara from wttr.in (using format=j1 for JSON), parse the data using Python, and generate an interactive HTML dashboard with clean CSS styling saved as 'weather_dashboard.html'."
+
+  - title: "Build Antigravity Game"
+    prompt: "Create a basic, single-file interactive HTML5/JavaScript game themed around 'Antigravity' (e.g., a simple physics-based game where you control a spaceship avoiding gravity wells to navigate). Save it as 'antigravity_game.html'. Keep it simple."
