@@ -22,4 +22,22 @@ examples:
     prompt: "Fetch the current weather and 3-day forecast for London and Ankara from wttr.in (using format=j1 for JSON), parse the data using Python, and generate an interactive HTML dashboard with clean CSS styling saved as 'weather_dashboard.html'."
 
   - title: "Build Antigravity Game"
-    prompt: "Create a basic, single-file interactive HTML5/JavaScript game themed around 'Antigravity' (e.g., a simple physics-based game where you control a spaceship avoiding gravity wells to navigate). Save it as 'antigravity_game.html'. Keep it simple."
+    prompt: |
+      Create a single-file interactive HTML5/JavaScript game called **"Antigravity"** using **Three.js** (imported via CDN: `https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js`). Save it as `antigravity_game.html`. The entire game, HTML, CSS, JS, shaders, lives in one file. No build tools.
+      ## Core Concept
+
+      You pilot a glowing neon spaceship through an endless procedural star field. **Gravity wells** (visualized as warping vortexes) pull you in. Your ship has an **antigravity shield** with limited energy — activating it repels nearby gravity wells but drains your shield bar. Navigate as far as possible without being consumed by a gravity well. The game gets progressively harder.
+
+      ## Physics & Gameplay
+
+      - **Ship movement**: Mouse (or touch) controls the ship. Raycaster projects the cursor onto the Y=0 plane; the ship lerps toward that point each frame. Movement is bounded to a play area of roughly X ∈ [-8, 8], Z ∈ [-4, 6]. The ship banks/tilts on its Z-axis proportionally to lateral velocity.
+
+      - **Gravity**: Each well exerts a pull on the ship: `F = G * mass / distance²`, capped at a max force to prevent teleporting. The force vector is applied to the ship's velocity each frame. Wells drift toward the player at the grid scroll speed, creating the illusion of forward flight.
+
+      - **Antigravity shield**: Hold **spacebar** (tap-and-hold on mobile). While active, all wells within radius 5 are repelled outward. Shield energy drains at 20%/s, regenerates at 5%/s when inactive.
+
+      - **Collision**: Ship enters radius 1.0 of a well core → game over. Passing within radius 2.0 without dying → near-miss bonus (+1 point, camera shake, screen-edge flash).
+
+      - **Scoring**: +1 for each well that passes behind the camera. Distance traveled shown as a secondary metric.
+
+      - **Difficulty curve**: Every 15 seconds — spawn rate increases, gravitational pull strength +10%, grid scroll speed +5%. At score thresholds (10, 25, 50) introduce new well types: **Pulsing** (oscillating pull) and **Binary** (two linked wells orbiting each other).
