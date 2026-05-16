@@ -1,6 +1,6 @@
 id: customer-support
 base_agent: antigravity-preview-05-2026
-description: "Scans allowlisted websites to build a custom knowledge base and answer support questions using that content."
+description: "Scans a website to build a custom knowledge base and answer support questions using that content."
 tools:
   - type: code_execution
   - type: google_search
