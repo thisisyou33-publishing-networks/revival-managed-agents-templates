@@ -1,55 +1,56 @@
 ---
 name: pdf-parsing
-description: Exposes two atomic data extraction tools (extract_pypdf and extract_gemini) to parse PDF/image invoices, putting orchestration and fallback decisions directly in the agent's hands.
+description: Exposes a 100% local, offline PDF batch extraction utility (extract_to_markdown.py) that isolates invoices under invoices/ and translates PDFs into clean Markdown files for LLM-native parsing.
 ---
 
-# PDF Invoice Parsing
+# PDF Invoice Local Extraction
 
-This skill exposes two focused, atomic extraction tools to the agent, allowing the agent's own planning brain to coordinate the workflow, handle fallbacks, and write the structured results database.
+This skill exposes a 100% offline, local PDF batch extraction utility (`extract_to_markdown.py`) that isolates all invoice documents inside the `invoices/` directory and exports them into clean, readable Markdown files (`.md`).
 
-## Atomic Tools Exposed
+This runs entirely offline without any external network, server, or API key dependencies. This decouples raw text extraction from structuring, allowing you (the LLM agent) to perform robust, flexible data extraction natively without relying on fragile regular expressions.
 
-### 1. Local Text Extractor (`extract_pypdf.py`)
-Extracts raw text content from a PDF document locally.
+## Batch Extraction Tool: `extract_to_markdown.py`
 
-```bash
-python3 skills/pdf-parsing/scripts/extract_pypdf.py --file ./workspace/invoices/invoice.pdf
-```
-- **Returns**: Raw text printed to stdout.
-- **Exit Code**: `0` on success, `1` on failure or empty text.
-
-### 2. Visual Gemini Parser (`extract_gemini.py`)
-Uploads a PDF or image file to Gemini and visually parses it into structured JSON.
+Processes a directory of PDF invoices sequentially, isolating all PDFs into a dedicated `invoices/` subdirectory and converting each to a matching `.md` file.
 
 ```bash
-python3 skills/pdf-parsing/scripts/extract_gemini.py --file ./workspace/invoices/invoice.png
+python3 skills/pdf-parsing/scripts/extract_to_markdown.py --workspace .agents/workspace
 ```
-- **Returns**: Structured JSON object matching the schema printed to stdout.
-- **Exit Code**: `0` on success, `1` on failure.
+
+* **Standard PDF Files**: Uses `pypdf` locally to instantly extract text and save it as `<filename>.md` under `.agents/workspace/invoices/`.
 
 ---
 
 ## Agent Orchestration Guidelines
 
-As the agent, you must coordinate these two tools for every invoice file:
+As the LLM agent, you should coordinate the invoice structuring workflow as follows:
 
-1.  **Always try `extract_pypdf.py` first** for all PDF files.
-    - **If successful**: Use your own language reasoning (LLM) to extract the required fields (`merchant_name`, `date`, `amount`, `invoice_number`) from the resulting raw text.
-2.  **Use `extract_gemini.py` as a fallback** if `extract_pypdf.py` fails (returns no text), or if the file is an image (`.png`, `.jpg`, `.jpeg`).
-3.  Compile all structured invoice objects into a single JSON list and save it as `{workspace}/parsed_invoices.json` matching this schema:
-    ```json
-    [
-      {
-        "date": "2026-05-15",
-        "merchant_name": "Google",
-        "amount": 150.00,
-        "invoice_number": "INV-GCP-1029",
-        "source_file": "google_invoice.png"
-      }
-    ]
-    ```
+1. **Move and Batch Extract**: Execute the batch extraction tool:
+   ```bash
+   python3 /.agents/skills/pdf-parsing/scripts/extract_to_markdown.py --workspace .agents/workspace
+   ```
+   This isolates all invoices inside `.agents/workspace/invoices/` and populates the folder with matching `<invoice_name>.md` files.
+
+2. **LLM-Native Structuring**: Read the generated `.md` files under `.agents/workspace/invoices/`. Use your own agent reasoning (LLM context) to natively extract the structured fields from the markdown:
+   - `merchant_name`
+   - `date` (format: `YYYY-MM-DD`)
+   - `amount` (float)
+   - `invoice_number`
+   - `source_file`
+
+3. **Compile Structured Database**: Combine all structured invoice objects into a single JSON list and save it directly as `.agents/workspace/parsed_invoices.json` using your file creation tools, matching this schema:
+   ```json
+   [
+     {
+       "date": "2026-05-15",
+       "merchant_name": "Google",
+       "amount": 150.00,
+       "invoice_number": "INV-GCP-1029",
+       "source_file": "google_invoice.png"
+     }
+   ]
+   ```
 
 ### Dependencies
 
-- `google-genai` (>= 2.0.0)
 - `pypdf` (>= 4.0.0)

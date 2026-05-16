@@ -10,29 +10,29 @@ Verify whether merchants or vendors from expense records are real, registered bu
 ## Embedded Script
 
 ```bash
-python3 skills/vendor-verification/scripts/verify_vendors.py --workspace ./workspace
+python3 skills/vendor-verification/scripts/verify_vendors.py --workspace .agents/workspace
 ```
 
 ### Arguments
 
 | Argument | Default | Description |
 |----------|---------|-------------|
-| `--workspace` | `workspace` | Workspace directory containing expenses.csv or reconciliation_data.json |
+| `--workspace` | `.agents/workspace` | Workspace directory containing expenses.csv or reconciliation_data.json |
 
 ### What it does
 
-1. Loads expense records from `{workspace}/reconciliation_data.json` (if available from a prior reconciliation run) or directly from `{workspace}/expenses.csv`.
+1. Loads expense records from `.agents/workspace/reconciliation_data.json` (if available from a prior reconciliation run) or directly from `.agents/workspace/expenses.csv`.
 2. Identifies all unique vendor/merchant names.
 3. For each unique merchant, queries the free **Wikidata Entity Search API**:
    `https://www.wikidata.org/w/api.php?action=wbsearchentities&search={merchant_name}&language=en&format=json`
 4. Analyzes the search results:
    - **Verified**: If a matching entity exists on Wikidata. Extracts the description (e.g. *“American multinational technology company”*) and entity ID (e.g., `Q95`).
    - **Unverified**: If no match is found on Wikidata.
-5. Generates `{workspace}/vendor_verification_report.md` with:
+5. Generates `.agents/workspace/vendor_verification_report.md` with:
    - Verification summary statistics.
    - A detailed status table for all unique vendors.
    - Flagged unverified vendors requiring secondary research.
-6. Generates `{workspace}/vendor_verification_data.json` containing the structured JSON results.
+6. Generates `.agents/workspace/vendor_verification_data.json` containing the structured JSON results.
 
 ### Licensing & Usage
 
@@ -43,5 +43,5 @@ python3 skills/vendor-verification/scripts/verify_vendors.py --workspace ./works
 
 | File | Path | Description |
 |------|------|-------------|
-| Verification Report | `{workspace}/vendor_verification_report.md` | Human-readable markdown report listing verified and unverified merchants with official descriptions. |
-| Verification Data | `{workspace}/vendor_verification_data.json` | Structured JSON containing merchant verification statuses, descriptions, and Wikidata entity URIs. |
+| Verification Report | `.agents/workspace/vendor_verification_report.md` | Human-readable markdown report listing verified and unverified merchants with official descriptions. |
+| Verification Data | `.agents/workspace/vendor_verification_data.json` | Structured JSON containing merchant verification statuses, descriptions, and Wikidata entity URIs. |

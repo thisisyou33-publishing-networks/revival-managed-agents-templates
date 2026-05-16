@@ -187,7 +187,7 @@ def write_outputs(workspace, results):
 
 def main():
     parser = argparse.ArgumentParser(description="Verify vendors using Wikidata")
-    parser.add_argument("--workspace", default="workspace", help="Workspace directory")
+    parser.add_argument("--workspace", default=".agents/workspace", help="Workspace directory")
     args = parser.parse_args()
 
     print("=== Document Processor: Vendor Verification ===\n")

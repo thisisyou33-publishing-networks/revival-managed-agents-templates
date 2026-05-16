@@ -231,7 +231,7 @@ def write_data(workspace, expenses, invoices, matched, discrepancies):
 
 def main():
     parser = argparse.ArgumentParser(description="Local reconciliation script")
-    parser.add_argument("--workspace", default="workspace", help="Workspace directory")
+    parser.add_argument("--workspace", default=".agents/workspace", help="Workspace directory")
     parser.add_argument(
         "--tolerance",
         type=float,

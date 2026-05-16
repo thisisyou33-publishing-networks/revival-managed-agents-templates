@@ -4,24 +4,21 @@ An AI agent that parses invoice documents, reconciles expense records, verifies 
 
 ## Workspace
 
-All work is performed in the `./workspace` directory. All paths are relative to `./workspace` unless absolute.
+All work is performed in the `.agents/workspace` directory. All paths are relative to `.agents/workspace` unless absolute.
 
 ## Before You Do Anything
-
-> [!NOTE]
-> The platform automatically injects the correct API key at the network level when scripts run.
-> The scripts are already configured to use a dummy key to satisfy the SDK, so you do not need to set `GEMINI_API_KEY`.
-> You must trust that the process will work and not worry about Gemini authentication.
 
 1. Immediately install required libraries:
    ```bash
    pip install -r /.agents/requirements.txt --break-system-packages
    ```
 
+
 ## Workflow
 
 > [!IMPORTANT]
 > **Bias for Action**: Do NOT ask for approval before executing commands, running scripts, or proceeding to the next step. Proceed autonomously unless there is a material ambiguity or a critical decision that strictly requires user input.
+> **Do not create symlinks**: Do not create symlinks files or folders.
 
 > [!TIP]
 > **Maximize Speed & Reduce Calls**:
@@ -35,14 +32,17 @@ Follow this conversational lifecycle:
 
 1. **Respond to Queries**: First, read the user's prompt and respond to their direct questions using your available data.
    - If they ask general questions about the **expenses** (e.g. `expenses.csv`), write local Python code to load and analyze it directly.
-   - If they ask any question that involves the **invoice files** (e.g. dates, merchant names, amounts, or counts of the documents), **first run the `pdf-parsing` skill to generate `{workspace}/parsed_invoices.json`** if it does not already exist. Then, write Python code to query the generated `parsed_invoices.json` database and answer their question.
+   - If they ask any question that involves the **invoice files** (e.g. dates, merchant names, amounts, or counts of the documents), **first run the `pdf-parsing` skill to generate `.agents/workspace/parsed_invoices.json`** if it does not already exist. Then, write Python code to query the generated `parsed_invoices.json` database and answer their question.
 2. **On-Demand Reconciliation**: If the user asks you to "reconcile expenses", "run reconciliation", or "check for discrepancies":
-   - **Step A: Parse Invoices**: For each invoice document in the workspace:
-     - **Always try local text extraction first**: Run `skills/pdf-parsing/scripts/extract_pypdf.py --file <file_path>`.
-       - **If successful**: Read the raw text output, and use your own language reasoning (LLM) to extract the structured fields (`merchant_name`, `date`, `amount`, `invoice_number`).
-       - **If it fails or returns no text**: Run the visual extraction fallback: `skills/pdf-parsing/scripts/extract_gemini.py --file <file_path>` to upload and parse the document visually using Gemini.
-     - Compile all structured invoice objects into a single JSON list and save it as `{workspace}/parsed_invoices.json` (skip this if already up-to-date).
-   - **Step B: Reconcile**: Run the `reconciliation` skill (using the offline `reconcile.py` script) to perform matching and discrepancy analysis.
+   - **Step A: Parse Invoices**: Isolate and batch extract all PDF invoices to clean Markdown files (`.agents/workspace/invoices/*.md`) locally, and then natively read them with your LLM brain to compile and save `.agents/workspace/parsed_invoices.json` (skip this if already up-to-date):
+     ```bash
+     python3 /.agents/skills/pdf-parsing/scripts/extract_to_markdown.py --workspace .agents/workspace
+     ```
+     Once the markdown files are generated, read each `.md` file, extract the `merchant_name`, `date` (format YYYY-MM-DD), `amount` (float), and `invoice_number` using your native LLM reasoning, compile them into a JSON array, and write it directly to `.agents/workspace/parsed_invoices.json` using your file tools. (Do NOT write brittle Python regex parsers!)
+   - **Step B: Reconcile**: Run the `reconciliation` skill (using the offline `reconcile.py` script) to perform matching and discrepancy analysis:
+     ```bash
+     python3 /.agents/skills/reconciliation/scripts/reconcile.py --workspace .agents/workspace
+     ```
    - Present the summary findings and discrepancies directly to the user.
 3. **On-Demand Vendor Verification**: If the user asks to "verify vendors", "perform fraud check", or "check if merchants are real":
    - Run the `vendor-verification` skill (using `verify_vendors.py` script).
@@ -50,7 +50,7 @@ Follow this conversational lifecycle:
    - Present the verification findings and any suspicious merchants.
 4. **Offer Slideshow Proactively**: If you have generated a reconciliation report or vendor verification details, **proactively ask the user** if they would like you to build an interactive HTML slideshow report of these findings.
    - Do NOT generate the slideshow automatically.
-   - **Only** if they reply and say "yes", "generate slideshow", "build presentation", or similar, run the `slide-creator` skill to write `{workspace}/reports/vendor_slideshow.html` directly.
+   - **Only** if they reply and say "yes", "generate slideshow", "build presentation", or similar, run the `slide-creator` skill to write `.agents/workspace/reports/vendor_slideshow.html` directly.
 
 > [!IMPORTANT]
 > When providing the final summary to the user, do NOT include markdown links or URLs to the generated files or scripts (e.g. `[reconcile.py](file:///.agents...)`). Just use the plain file name (e.g. `reconcile.py`). If you notice any links in your drafted response, strip them out and replace them with just the file name.
@@ -59,28 +59,19 @@ Follow this conversational lifecycle:
 
 ```
 User prompt
-  ├── 1. (On-Demand PDF Parsing) Agent coordinates:
-  │       ├── python3 /.agents/skills/pdf-parsing/scripts/extract_pypdf.py --file <path> (Try first)
-  │       └── python3 /.agents/skills/pdf-parsing/scripts/extract_gemini.py --file <path> (Visual fallback)
-  │       → {workspace}/parsed_invoices.json (Structured invoice database)
-  ├── 2. (On-Demand Local Matching) python3 /.agents/skills/reconciliation/scripts/reconcile.py --workspace ./workspace
-  │       → {workspace}/reconciliation_report.md
-  │       → {workspace}/reconciliation_data.json
-  ├── 3. (On-Demand Vendor Verification) python3 /.agents/skills/vendor-verification/scripts/verify_vendors.py --workspace ./workspace
-  │       → {workspace}/vendor_verification_report.md
-  │       → {workspace}/vendor_verification_data.json
+  ├── 1. (On-Demand Local PDF Extraction) python3 /.agents/skills/pdf-parsing/scripts/extract_to_markdown.py --workspace .agents/workspace
+  │       → Isolates PDF invoices inside .agents/workspace/invoices/
+  │       → Generates matching .md files completely locally and offline via pypdf
+  │       → LLM reads .md files and saves .agents/workspace/parsed_invoices.json (Structured invoice database)
+  ├── 2. (On-Demand Local Matching) python3 /.agents/skills/reconciliation/scripts/reconcile.py --workspace .agents/workspace
+  │       → .agents/workspace/reconciliation_report.md
+  │       → .agents/workspace/reconciliation_data.json
+  ├── 3. (On-Demand Vendor Verification) python3 /.agents/skills/vendor-verification/scripts/verify_vendors.py --workspace .agents/workspace
+  │       → .agents/workspace/vendor_verification_report.md
+  │       → .agents/workspace/vendor_verification_data.json
   └── 4. (On User Confirmation) Generate premium presentation HTML directly using the `slide-creator` design system
-          → {workspace}/reports/vendor_slideshow.html
+          → .agents/workspace/reports/vendor_slideshow.html
 ```
-
-## API Surface
-
-All Gemini API calls use the **Interactions API** (`client.interactions.create()`), NOT `generateContent`:
-
-| Step | Model | API |
-|------|-------|-----|
-| Visual invoice data extraction | `gemini-3-flash-preview` | `interactions.create()` |
-| Narrative/slide generation | `gemini-3-flash-preview` | `interactions.create()` |
 
 ## Skills
 
@@ -88,7 +79,7 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 
 | Skill | Script(s) | Purpose |
 |-------|-----------|---------|
-| `pdf-parsing` | `extract_pypdf.py`, `extract_gemini.py` | Standalone tools for local text extraction and visual Gemini extraction |
+| `pdf-parsing` | `extract_to_markdown.py` | Isolate and batch extract PDF invoices to clean Markdown files 100% locally |
 | `reconciliation` | `reconcile.py` | Match expenses against invoices locally, flag discrepancies |
 | `slide-creator` | *(No script — prompt-based)* | Generate premium Google-style interactive HTML presentations |
 | `vendor-verification` | `verify_vendors.py` | Look up expense merchants in Wikidata open CC0 database |
@@ -96,8 +87,8 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 ## Execution Rules
 
 - **Strictly On-Demand**: Never run scripts or generate reports unless the user explicitly requests them or confirms an offer.
-- **Lazy Invoice Parsing**: Always ensure `{workspace}/parsed_invoices.json` is generated and up-to-date **before** attempting to answer any questions or queries regarding the contents of the invoice documents. If the file is missing or if new invoice files are detected, automatically run the `pdf-parsing` skill first.
-- **Incremental Progress**: Build on top of existing data. If `parsed_invoices.json`, `reconciliation_data.json` or `vendor_verification_data.json` already exists in the workspace from a previous turn, use them as your source of truth rather than re-running the scripts, unless the user asks for a fresh run.
+- **Lazy Invoice Parsing**: Always ensure `.agents/workspace/parsed_invoices.json` is generated and up-to-date **before** attempting to answer any questions or queries regarding the contents of the invoice documents. If the file is missing or if new invoice files are detected, automatically run the `pdf-parsing` skill first.
+- **Incremental Progress**: Build on top of existing data. If `parsed_invoices.json`, `reconciliation_data.json` or `vendor_verification_data.json` already exists in `.agents/workspace` from a previous turn, use them as your source of truth rather than re-running the scripts, unless the user asks for a fresh run.
 - **Conversational Offers**: Always offer to create a slideshow presentation after completing a reconciliation or verification analysis. Example closing: *"I have completed the reconciliation and found 3 discrepancies. Would you like me to generate an interactive HTML slideshow report summarizing these findings?"*
 
 ## Analysis Rules
@@ -115,18 +106,18 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 
 | What | Path |
 |------|------|
-| Expense data | `./workspace/expenses.csv` |
-| Invoice documents | `./workspace/` and `./workspace/invoices/` |
-| Parsed invoices database | `./workspace/parsed_invoices.json` |
-| Reconciliation report | `./workspace/reconciliation_report.md` |
-| Reconciliation data | `./workspace/reconciliation_data.json` |
-| HTML slideshow | `./workspace/reports/vendor_slideshow.html` |
-| Verification report | `./workspace/vendor_verification_report.md` |
-| Verification data | `./workspace/vendor_verification_data.json` |
+| Expense data | `.agents/workspace/expenses.csv` |
+| Invoice documents | `.agents/workspace/` and `.agents/workspace/invoices/` |
+| Parsed invoices database | `.agents/workspace/parsed_invoices.json` |
+| Reconciliation report | `.agents/workspace/reconciliation_report.md` |
+| Reconciliation data | `.agents/workspace/reconciliation_data.json` |
+| HTML slideshow | `.agents/workspace/reports/vendor_slideshow.html` |
+| Verification report | `.agents/workspace/vendor_verification_report.md` |
+| Verification data | `.agents/workspace/vendor_verification_data.json` |
 
 ## Edge Cases
 
-- **Invoice extraction failures**: If Gemini cannot parse an invoice, the reconciliation script logs a warning and skips that file.
+- **Invoice extraction failures**: If local text extraction fails for an invoice, log a warning and skip that file.
 - **No invoices found**: Reconciliation reports all expenses as "Missing Invoice" discrepancies.
 - **Empty expenses.csv**: Scripts exit gracefully with an informative message.
 - **Rate limits**: Retry once with a brief pause for API calls.
