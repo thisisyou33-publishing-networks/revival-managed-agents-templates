@@ -28,7 +28,11 @@ import argparse
 import json
 import os
 import time
+import warnings
 from google import genai
+
+# Suppress experimental warnings from SDK
+warnings.filterwarnings("ignore", message="Interactions usage is experimental")
 
 INVOICE_EXTENSIONS = (".pdf", ".png", ".jpg", ".jpeg")
 
@@ -71,8 +75,8 @@ def find_invoices(workspace):
     return sorted(invoice_files)
 
 
-def extract_pdf_text(pdf_path):
-    """Extract text from PDF using pypdf."""
+def extract_pypdf(pdf_path):
+    """Locally extract text from PDF using pypdf."""
     try:
         import pypdf
         reader = pypdf.PdfReader(pdf_path)
@@ -87,6 +91,76 @@ def extract_pdf_text(pdf_path):
         return ""
 
 
+def clean_response(text):
+    """Clean up potential markdown wrapping (e.g. ```json ... ```)."""
+    text = text.strip()
+    if text.startswith("```json"):
+        text = text[7:]
+    if text.startswith("```"):
+        text = text[3:]
+    if text.endswith("```"):
+        text = text[:-3]
+    return text.strip()
+
+
+def extract_gemini_text(client, text):
+    """Extract structured data from raw text using Gemini Interactions API."""
+    prompt = EXTRACTION_FROM_TEXT_PROMPT.format(text=text)
+    
+    interaction = client.interactions.create(
+        model="gemini-3-flash-preview",
+        input=prompt,
+    )
+    
+    response_text = ""
+    if hasattr(interaction, "steps") and interaction.steps and interaction.steps[-1].content:
+        response_text = interaction.steps[-1].content[0].text
+        
+    cleaned_json = clean_response(response_text)
+    data = json.loads(cleaned_json)
+    
+    # Normalize amount to float
+    if data.get("amount") is not None:
+        try:
+            data["amount"] = float(data["amount"])
+        except (ValueError, TypeError):
+            data["amount"] = 0.0
+            
+    return data
+
+
+def extract_gemini_vision(client, file_path, mime_type, input_type):
+    """Upload document and extract structured data visually using Gemini API."""
+    # 1. Upload file using Files API
+    uploaded_file = client.files.upload(file=file_path)
+    print(f"    Uploaded as {uploaded_file.name}")
+    
+    # 2. Extract data via Interactions API
+    interaction = client.interactions.create(
+        model="gemini-3-flash-preview",
+        input=[
+            {"type": "text", "text": EXTRACTION_PROMPT},
+            {"type": input_type, "uri": uploaded_file.uri, "mime_type": mime_type},
+        ],
+    )
+    
+    response_text = ""
+    if hasattr(interaction, "steps") and interaction.steps and interaction.steps[-1].content:
+        response_text = interaction.steps[-1].content[0].text
+        
+    cleaned_json = clean_response(response_text)
+    data = json.loads(cleaned_json)
+    
+    # Normalize amount to float
+    if data.get("amount") is not None:
+        try:
+            data["amount"] = float(data["amount"])
+        except (ValueError, TypeError):
+            data["amount"] = 0.0
+            
+    return data
+
+
 def extract_invoice_data(client, invoice_path):
     """Extract structured data from invoice, utilizing local pypdf for PDFs where possible."""
     print(f"  Processing invoice: {os.path.basename(invoice_path)}...")
@@ -96,47 +170,17 @@ def extract_invoice_data(client, invoice_path):
     # Try local text extraction if it's a PDF
     if ext == ".pdf":
         print("    Attempting local text extraction with pypdf...")
-        pdf_text = extract_pdf_text(invoice_path)
+        pdf_text = extract_pypdf(invoice_path)
         if pdf_text and len(pdf_text) > 10:
             print(f"    ✅ Local text extracted ({len(pdf_text)} chars). Calling Gemini for structured parsing...")
-            prompt = EXTRACTION_FROM_TEXT_PROMPT.format(text=pdf_text)
-            interaction = client.interactions.create(
-                model="gemini-3-flash-preview",
-                input=prompt,
-            )
-            response_text = ""
-            if hasattr(interaction, "steps") and interaction.steps and interaction.steps[-1].content:
-                response_text = interaction.steps[-1].content[0].text
-
-            # Clean up potential markdown wrapping
-            response_text = response_text.strip()
-            if response_text.startswith("```json"):
-                response_text = response_text[7:]
-            if response_text.startswith("```"):
-                response_text = response_text[3:]
-            if response_text.endswith("```"):
-                response_text = response_text[:-3]
-            response_text = response_text.strip()
-
-            data = json.loads(response_text)
-            if data.get("amount") is not None:
-                try:
-                    data["amount"] = float(data["amount"])
-                except (ValueError, TypeError):
-                    data["amount"] = 0.0
-
+            data = extract_gemini_text(client, pdf_text)
             data["source_file"] = os.path.basename(invoice_path)
             print(f"    ✅ Extracted via text: {data.get('merchant_name', 'Unknown')} — ${data.get('amount', 0):.2f}")
             return data
         else:
             print("    ⚠️  No text extractable from PDF. Falling back to visual Gemini parsing...")
 
-    # Default visual parsing
-    # Upload file
-    uploaded_file = client.files.upload(file=invoice_path)
-    print(f"    Uploaded as {uploaded_file.name}")
-
-    # Determine MIME type and input type for Interactions API
+    # Default visual parsing (already implemented)
     type_map = {
         ".pdf": ("application/pdf", "document"),
         ".png": ("image/png", "image"),
@@ -145,38 +189,7 @@ def extract_invoice_data(client, invoice_path):
     }
     mime_type, input_type = type_map.get(ext, ("application/octet-stream", "document"))
 
-    # Extract data via Interactions API
-    interaction = client.interactions.create(
-        model="gemini-3-flash-preview",
-        input=[
-            {"type": "text", "text": EXTRACTION_PROMPT},
-            {"type": input_type, "uri": uploaded_file.uri, "mime_type": mime_type},
-        ],
-    )
-
-    response_text = ""
-    if hasattr(interaction, "steps") and interaction.steps and interaction.steps[-1].content:
-        response_text = interaction.steps[-1].content[0].text
-
-    # Clean up potential markdown wrapping
-    response_text = response_text.strip()
-    if response_text.startswith("```json"):
-        response_text = response_text[7:]
-    if response_text.startswith("```"):
-        response_text = response_text[3:]
-    if response_text.endswith("```"):
-        response_text = response_text[:-3]
-    response_text = response_text.strip()
-
-    data = json.loads(response_text)
-
-    # Normalize amount to float
-    if data.get("amount") is not None:
-        try:
-            data["amount"] = float(data["amount"])
-        except (ValueError, TypeError):
-            data["amount"] = 0.0
-
+    data = extract_gemini_vision(client, invoice_path, mime_type, input_type)
     data["source_file"] = os.path.basename(invoice_path)
     print(f"    ✅ Extracted visually: {data.get('merchant_name', 'Unknown')} — ${data.get('amount', 0):.2f}")
     return data

@@ -22,9 +22,10 @@ python3 skills/pdf-parsing/scripts/parse_invoices.py --workspace ./workspace
 ### What it does
 
 1. Scans the workspace and `invoices/` subdirectory for invoice files (`.pdf`, `.png`, `.jpg`, `.jpeg`).
-2. For each invoice:
-   - **Text-based PDF**: Attempts local text extraction with `pypdf`. If text is found, calls Gemini (`gemini-3-flash-preview`) with a fast, text-only prompt to parse the fields into structured JSON. No file upload is required!
-   - **Scanned PDF or Image**: Falls back to the visual parsing method: uploads the file to the **Gemini Files API**, then calls Gemini (`gemini-3-flash-preview`) with a visual prompt.
+2. For each invoice, delegates to:
+   - **`extract_pypdf`**: Attempts local text extraction with `pypdf`.
+   - **`extract_gemini_text`**: If text is successfully extracted, calls Gemini (`gemini-3-flash-preview`) with a text-only prompt to parse the fields into structured JSON. No file upload is required!
+   - **`extract_gemini_vision`**: If no text is extractable (scanned PDFs) or for image files, uploads the file to the **Gemini Files API** and performs visual parsing via `interactions.create`.
 3. Compiles all extracted invoices into a structured JSON list.
 4. Saves results to `{workspace}/parsed_invoices.json`.
 
@@ -32,14 +33,6 @@ python3 skills/pdf-parsing/scripts/parse_invoices.py --workspace ./workspace
 
 - `google-genai` (>= 2.0.0)
 - `pypdf` (>= 4.0.0)
-
-## API Surface
-
-All Gemini API calls in this script use the **Interactions API** (`client.interactions.create()`), NOT `generateContent`:
-
-| Step | Model | API |
-|------|-------|-----|
-| Invoice data extraction | `gemini-3-flash-preview` | `interactions.create()` |
 
 ## Output
 
