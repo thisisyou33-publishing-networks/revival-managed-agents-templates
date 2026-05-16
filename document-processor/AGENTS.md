@@ -1,6 +1,6 @@
 # AGENTS.md — Document Processor
 
-An AI agent that reconciles expense reports against invoice documents and produces premium interactive HTML slideshow reports. Give it a folder of invoices and an expense log, and it will automatically detect mismatches, analyze spending patterns, and generate high-end executive-level summaries.
+An AI agent that reconciles expense reports against invoice documents, verifies vendor legitimacy, and produces premium interactive HTML slideshow reports. Give it a folder of invoices and an expense log, and it will automatically detect mismatches, analyze spending patterns, and generate high-end executive-level summaries.
 
 ## Workspace
 
@@ -33,6 +33,7 @@ Upon execution, you should:
 
 1. **Reconcile** — use `reconciliation` skill to match expenses in `expenses.csv` against invoice documents (PDFs and images) in the workspace. Extracts data from files using Gemini, performs fuzzy matching, and flags discrepancies.
 2. **Generate Slideshow** — use `slide-creator` skill to write a premium, Google-style interactive HTML slideshow presenting the results of the reconciliation and vendor cost analysis (including charts, layout templates, and structured executive insights).
+3. **Verify Vendors (Optional)** — if the user explicitly requests to verify merchants, check if vendors are real, or run fraud checks, use the `vendor-verification` skill to look them up on Wikidata's public open database. For any unverified vendors, use your **Google Search** tool to perform live search investigations (confirming if they are real small/local businesses or potentially fraudulent shell entities), reporting your findings in the final summary.
 
 > [!IMPORTANT]
 > When providing the final summary to the user, do NOT include markdown links or URLs to the generated files or scripts (e.g. `[reconcile.py](file:///.agents...)`). Just use the plain file name (e.g. `reconcile.py`). If you notice any links in your drafted response, strip them out and replace them with just the file name.
@@ -44,8 +45,11 @@ User prompt
   ├── 1. python3 /.agents/skills/reconciliation/scripts/reconcile.py --workspace ./workspace
   │       → {workspace}/reconciliation_report.md
   │       → {workspace}/reconciliation_data.json
-  └── 2. Generate premium presentation HTML directly using the `slide-creator` design system
-          → {workspace}/reports/vendor_slideshow.html
+  ├── 2. Generate premium presentation HTML directly using the `slide-creator` design system
+  │       → {workspace}/reports/vendor_slideshow.html
+  └── 3. (Optional) python3 /.agents/skills/vendor-verification/scripts/verify_vendors.py --workspace ./workspace
+          → {workspace}/vendor_verification_report.md
+          → {workspace}/vendor_verification_data.json
 ```
 
 ## API Surface
@@ -65,6 +69,7 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 |-------|-----------|---------|
 | `reconciliation` | `reconcile.py` | Match expenses against invoices, flag discrepancies |
 | `slide-creator` | *(No script — prompt-based)* | Generate premium Google-style interactive HTML presentations |
+| `vendor-verification` | `verify_vendors.py` | Look up expense merchants in Wikidata open CC0 database |
 
 ## Execution Order
 
@@ -72,9 +77,10 @@ Run strictly in order:
 
 1. `reconciliation` → `reconciliation_report.md`, `reconciliation_data.json`
 2. `slide-creator` → `reports/vendor_slideshow.html` (written directly by you based on the reconciliation data)
+3. `vendor-verification` (Optional) → `vendor_verification_report.md`, `vendor_verification_data.json`
 
 > [!NOTE]
-> Step 2 (slideshow) can optionally use `reconciliation_data.json` from step 1 as input. It can also run independently using `expenses.csv` directly.
+> Step 2 (slideshow) and Step 3 (vendor verification) can optionally use `reconciliation_data.json` from step 1 as input. They can also run independently using `expenses.csv` directly.
 
 ## Analysis Rules
 
@@ -96,6 +102,8 @@ Run strictly in order:
 | Reconciliation report | `./workspace/reconciliation_report.md` |
 | Reconciliation data | `./workspace/reconciliation_data.json` |
 | HTML slideshow | `./workspace/reports/vendor_slideshow.html` |
+| Verification report | `./workspace/vendor_verification_report.md` |
+| Verification data | `./workspace/vendor_verification_data.json` |
 
 ## Edge Cases
 
@@ -103,3 +111,4 @@ Run strictly in order:
 - **No invoices found**: Reconciliation reports all expenses as "Missing Invoice" discrepancies.
 - **Empty expenses.csv**: Scripts exit gracefully with an informative message.
 - **Rate limits**: Retry once with a brief pause for API calls.
+- **Wikidata rate limits**: The script uses an explicit User-Agent. If rate-limited, it handles errors gracefully and reports merchants as Unverified.

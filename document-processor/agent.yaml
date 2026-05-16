@@ -2,6 +2,7 @@ id: reconciliation-agent
 base_agent: antigravity-preview-05-2026
 description: "Reconciles expenses and invoices, and creates interactive HTML slideshow reports."
 tools:
+  - type: google_search
   - type: code_execution
 environment:
   type: "remote"
@@ -18,5 +19,7 @@ examples:
     prompt: "Summarize the total expenses by category."
   - title: "Vendor Cost Slideshow"
     prompt: "Create an HTML slideshow showing our top 3 highest-cost vendors."
+  - title: "Verify Vendors"
+    prompt: "Are the vendors listed in our expenses real, legitimate businesses?"
   - title: "Full Analysis Pipeline"
     prompt: "Run a full analysis: reconcile all expenses and create a vendor cost slideshow."
