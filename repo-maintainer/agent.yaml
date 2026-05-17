@@ -16,4 +16,4 @@ examples:
   - title: "Fix Critical Issue"
     prompt: "Clone https://github.com/googleapis/python-genai, find the most critical open issue and generate a .patch file to fix it."
   - title: "Top Issues"
-    prompt: "Clone https://github.com/googleapis/python-genai and tell me what the top issues are."
+    prompt: "What are the top open issues for https://github.com/googleapis/python-genai?"

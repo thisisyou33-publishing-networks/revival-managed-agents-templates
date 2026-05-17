@@ -87,5 +87,5 @@ Each skill lives in `/.agents/skills/<name>/` with a `SKILL.md` (and optional he
 
 ## Edge Cases
 
-- **Public API Rate Limits**: If GitHub's REST API is rate limited, log an informative message and ask the user to provide issues directly or try the `gh` CLI.
+- **Public API Rate Limits**: If GitHub's REST API is rate limited, log an informative message and ask the user to provide issues directly.
 - **Conflicts or Broken Patches**: Test code locally before exporting diffs to ensure they compile.

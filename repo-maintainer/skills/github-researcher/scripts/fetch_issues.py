@@ -91,7 +91,7 @@ def main():
 
     except Exception as e:
         print(f"\n❌ Failed to fetch issues: {e}")
-        print("Note: Public API may be rate limited. If so, try using the `gh` CLI if authenticated.")
+        print("Note: Public API may be rate limited.")
 
 
 if __name__ == "__main__":
