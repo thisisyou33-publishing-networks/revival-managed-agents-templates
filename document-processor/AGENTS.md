@@ -53,9 +53,6 @@ Follow this conversational lifecycle:
    - **Only** if they reply and say "yes", "generate slideshow", "build presentation", or similar, run the `slide-creator` skill to write `.agents/workspace/reports/vendor_slideshow.html` directly.
 
 > [!IMPORTANT]
-> When providing the final summary to the user, do NOT include markdown links URLs to the generated LOCAL files or scripts (e.g. `[reconcile.py](file:///.agents...)`).  Just use the plain file name (e.g. `reconcile.py`). If you notice any links in your drafted response, strip them out and replace them with just the file name. It is however acceptable to include URLs to external websites where relevant.
-
-> [!IMPORTANT]
 > **Do NOT Write Custom Scripts Calling the Gemini API / GenAI SDK**:
 > Although you have access to the Gemini model in your conversational turns, the remote sandboxed terminal **strictly restricts custom background scripts from making programmatic GenAI SDK or Gemini API calls** (which will fail with API key errors). 
 > - **Always extract locally**: Use `extract_to_markdown.py` to translate PDFs to Markdown files completely offline.
