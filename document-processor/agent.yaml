@@ -9,7 +9,7 @@ environment:
   type: "remote"
   sources:
     - type: "gcs"
-      source: "gs://templates-data/document-processor"
+      source: "gs://generativeai-downloads/managed-agents-templates/document-processor/"
       target: ".agents/workspace"
   network:
     allowlist:
