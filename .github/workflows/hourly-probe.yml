@@ -79,11 +79,10 @@ jobs:
         id: run_probe
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TEMPLATE: ${{ matrix.template }}
+          CHIP: ${{ matrix.chip }}
+          PROMPT: ${{ matrix.prompt }}
         run: |
-          TEMPLATE="${{ matrix.template }}"
-          CHIP="${{ matrix.chip }}"
-          PROMPT="${{ matrix.prompt }}"
-
           echo "Template: $TEMPLATE"
           echo "Chip: $CHIP"
           echo "Prompt: $PROMPT"
