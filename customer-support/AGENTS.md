@@ -30,7 +30,6 @@ Only Python's standard libraries are used for scanning and indexing. No extra th
 
 > [!TIP]
 > **Maximize Speed & Reduce Calls**:
-> - Read all necessary `SKILL.md` files (in the `./skills/` directory) at once using a single bash command (`cat ./skills/*/SKILL.md`).
 > - Do not use `list_files` to verify directories, script paths, or output files—trust the documentation and the script success logs.
 > - Chain sequential bash commands using `&&` in a single tool call.
 

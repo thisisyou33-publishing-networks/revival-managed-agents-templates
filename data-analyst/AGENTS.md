@@ -24,7 +24,6 @@ All work is performed in the `.agents/workspace` directory. All paths are relati
 
 > [!TIP]
 > **Maximize Speed & Reduce Calls**:
-> - Read all necessary `SKILL.md` files (in the `/.agents/skills/` directory) at once using a single bash command (`cat /.agents/skills/*/SKILL.md`).
 > - Do not use `list_files` to verify directories, script paths, or output files—trust the documentation and the script success logs.
 > - Chain sequential bash commands using `&&` in a single tool call.
 
