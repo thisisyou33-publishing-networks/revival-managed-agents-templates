@@ -21,6 +21,6 @@ This skill provides guidelines for interacting with the Git repository and gener
 
 ## Rules
 - **CRITICAL**: Do NOT push to remote branches.
-- **CRITICAL**: Do NOT create Pull Requests (`gh pr create`).
+- **CRITICAL**: Do NOT attempt to create Pull Requests or use GitHub CLI (`gh`).
 - Always verify your changes locally before generating the patch.
 - Save all generated patches to `{workspace}/output/`.

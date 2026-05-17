@@ -7,6 +7,9 @@ description: Guides the agent on how to read and search GitHub issues to underst
 
 This skill helps the agent find and understand issues in a specified GitHub repository, and gain a deep understanding of the codebase.
 
+> [!WARNING]
+> **GitHub CLI (`gh`) is NOT installed** in this environment. Do NOT attempt to run `gh` commands. Always use the provided `fetch_issues.py` script to batch fetch open issues, and use `curl` with the GitHub REST API to fetch specific issue details or comments.
+
 ## Workflow
 
 ### 1. Fetching Issues
@@ -19,16 +22,16 @@ python skills/github-researcher/scripts/fetch_issues.py --repo <owner>/<repo> --
 
 Output: `{workspace}/data/github-issues.md`
 
-Alternatively, if the environment is authenticated, you can use the GitHub CLI (`gh`):
+If you need to fetch specific issue details or comments, you can query the GitHub REST API directly using `curl` (since `api.github.com` is in the network allowlist):
 
+#### Fetch Specific Issue Details:
 ```bash
-gh issue list --repo <owner>/<repo> --state open --limit 20
+curl -s -H "User-Agent: Repo-Maintainer/1.0" https://api.github.com/repos/<owner>/<repo>/issues/<issue_number>
 ```
 
-### 2. Reading Issue Details
-To understand a specific problem deeply:
+#### Fetch Comments on a Specific Issue:
 ```bash
-gh issue view <issue_number> --repo <owner>/<repo> --comments
+curl -s -H "User-Agent: Repo-Maintainer/1.0" https://api.github.com/repos/<owner>/<repo>/issues/<issue_number>/comments
 ```
 
 ### 3. Understanding the Repo
