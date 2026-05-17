@@ -39,9 +39,6 @@ Upon execution, you should:
 6. **Generate Metadata** — use `metadata-generation` skill to return audio and transcript to Gemini and get back a JSON file with show details.
 7. **Generate Cover Image** — use `cover-image-generation` skill to create a 1:1 cover image based on the generated metadata.
 
-> [!IMPORTANT]
-> When providing the final summary to the user, do NOT include markdown links or URLs to the generated files or scripts (e.g. `[fetch_hn.py](file:///.agents...)`). Just use the plain file name (e.g. `fetch_hn.py`). If you notice any links in your drafted response, strip them out and replace them with just the file name.
-
 ## Architecture
 
 ```
