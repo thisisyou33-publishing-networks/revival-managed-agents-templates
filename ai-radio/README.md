@@ -15,17 +15,19 @@ A template for [Managed Agents using the Gemini API](TODO). This agent turns a c
 
 ## 🛠️ Code Snippet Placeholder
 
-```python
-# TODO: 
+```bash
+# TODO
+cd ai-radio
+gemini-api agents test --prompt "Hello, what are your instructions?"
 ```
 
 ---
 
-## 🧪 Testing the Agent
+## 🧪 Testing the Prober
 
-To test the agent from the root of this repository:
+To quickly test the template end-to-end, run:
 
 ```bash
-cd ai-radio
-gemini-api agents test --prompt "Hello, what are your instructions?"
+export GEMINI_API_KEY="your_api_key_here"
+./probers.sh
 ```

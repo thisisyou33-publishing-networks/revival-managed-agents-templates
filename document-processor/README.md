@@ -15,17 +15,19 @@ A template for building [Managed Agents using the Gemini API](TODO). This agent 
 
 ## 🛠️ Code Snippet Placeholder
 
-```python
+```bash
 # TODO
+cd document-processor
+gemini-api agents test --prompt "Hello, what are your instructions?"
 ```
 
 ---
 
-## 🧪 Testing the Agent
+## 🧪 Testing the Prober
 
-To test the agent from the root of this repository:
+To quickly test the template end-to-end, run:
 
 ```bash
-cd document-processor
-gemini-api agents test --prompt "Hello, what are your instructions?"
+export GEMINI_API_KEY="your_api_key_here"
+./probers.sh
 ```
