@@ -24,7 +24,6 @@ Only Python's standard libraries are used for scanning and indexing. No extra th
 > **Restricted Web Access**: Due to security sandboxing, your network access is closed by default. You only have web access to the specific allowlisted domains configured in your settings:
 > - `ai.google.dev`
 > - `fastapi.tiangolo.com`
-> - `antigravity.google`
 > 
 > If a user asks you to scan or index a website outside this allowed list, **politely explain this sandbox restriction** and provide them with the list of supported/allowlisted domains.
 
@@ -46,10 +45,11 @@ Follow this conversational lifecycle:
        - *Example closing:* *"I have successfully scanned and indexed the FastAPI documentation! What would you like to know? For example, you can ask me about: SQL Databases, Background Tasks, Security and OAuth2, or Dependency Injection."*
 2. **If No Website has been provided yet**:
    - If the user asks a support question but you have no corpus/snapshots yet, politely request an allowed website URL:
-     - *"I'd love to help! Please provide the website URL of your business first so I can scan and build a customer support corpus (note: supported domains include ai.google.dev, fastapi.tiangolo.com, and antigravity.google)."*
+     - *"I'd love to help! Please provide the website URL of your business first so I can scan and build a customer support corpus (note: supported domains include ai.google.dev and fastapi.tiangolo.com)."*
 3. **Answering Inquiries & Recording Memory**:
    - When a user asks a question about the business, **always open and read `.agents/workspace/pages/index.md` first**. Find which specific Markdown file matches the user's topic, and then open and search that specific file for the matching sections.
    - Formulate a precise, friendly, and helpful support response. Do not make up facts not in the corpus.
+   - **Original Source Links**: When answering a support question, find the **Original Source URL** associated with that content (available in `.agents/workspace/pages/index.md` or as frontmatter metadata at the top of individual crawled markdown files). **Always include the clickable original source link** at the bottom of your response so the user can visit the official site if needed (do NOT link to the local markdown file path).
    - **Memory Append**: Right after delivering your response, you MUST save the interaction details into memory using the **Memory Skill** (appends details directly to `.agents/workspace/memory.md`).
 
 ---
@@ -63,8 +63,8 @@ User prompt
   │       │     → Converts HTML pages to Markdown under .agents/workspace/pages/
   │       │     → Generates snapshots.json and a structured .agents/workspace/pages/index.md
   ├── 2. (Answering Support Inquiries):
-  │       ├── Read .agents/workspace/pages/index.md to identify the matching file
-  │       └── Read the targeted .md file to formulate a friendly support answer
+  │       ├── Read .agents/workspace/pages/index.md to identify the matching file and original source URL
+  │       └── Read the targeted .md file to formulate a friendly support answer with original source link
   └── 3. (Memory Append) Record interaction details natively:
           └── Append details directly to .agents/workspace/memory.md
 ```
