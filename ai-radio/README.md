@@ -16,9 +16,8 @@ A template for [Managed Agents using the Gemini API](TODO). This agent turns a c
 ## 🛠️ Code Snippet Placeholder
 
 ```bash
-# TODO
 cd ai-radio
-gemini-api agents test --prompt "Hello, what are your instructions?"
+gemini-api agents test --prompt "Generate a 3-minute radio show called Daily Hacker Bites based on top Hacker News stories."
 ```
 
 ---

@@ -16,9 +16,8 @@ A template for building [Managed Agents using the Gemini API](TODO). This agent 
 ## 🛠️ Code Snippet Placeholder
 
 ```bash
-# TODO
 cd customer-support
-gemini-api agents test --prompt "Hello, what are your instructions?"
+gemini-api agents test --prompt "Build Gemini API customer support bot grounded with ai.google.dev/gemini-api/docs."
 ```
 
 ---

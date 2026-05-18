@@ -18,7 +18,7 @@ A template for building [Managed Agents using the Gemini API](TODO). This agent 
 ```bash
 # TODO
 cd data-analyst
-gemini-api agents test --prompt "Hello, what are your instructions?"
+gemini-api agents test --prompt "Who is my biggest customer?"
 ```
 
 ---

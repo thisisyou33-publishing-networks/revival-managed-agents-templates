@@ -16,9 +16,8 @@ A template for building [Managed Agents using the Gemini API](TODO). This agent 
 ## 🛠️ Code Snippet Placeholder
 
 ```bash
-# TODO
 cd repo-maintainer
-gemini-api agents test --prompt "Hello, what are your instructions?"
+gemini-api agents test --prompt "Clone https://github.com/googleapis/python-genai and give me an overview of the repository structure and README."
 ```
 
 ---
