@@ -21,11 +21,11 @@ A template for building [Managed Agents using the Gemini API](TODO). This agent 
 
 ---
 
-## 🧪 Testing the Prober
+## 🧪 Testing the Agent
 
-To quickly test the template end-to-end, run:
+To test the agent from the root of this repository:
 
 ```bash
-export GEMINI_API_KEY="your_api_key_here"
-./probers.sh
+cd data-analyst
+gemini-api agents test --prompt "Hello, what are your instructions?"
 ```
