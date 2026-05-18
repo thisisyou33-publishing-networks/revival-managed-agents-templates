@@ -1,6 +1,6 @@
 # Customer Support Template
 
-A template for building [Managed Agents using the Gemini API](TODO). This agent scans and indexes company documentation, API references, or website pages to answer customer support queries with grounded, factual accuracy.
+A template for building [Managed Agents using the Gemini API](https://ai.google.dev/gemini-api/managed-agents). This agent scans and indexes company documentation, API references, or website pages to answer customer support queries with grounded, factual accuracy.
 
 ---
 

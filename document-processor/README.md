@@ -1,6 +1,6 @@
 # Document Processor Template
 
-A template for building [Managed Agents using the Gemini API](TODO). This agent parses raw PDF invoices locally, runs automated matching and discrepancy audits against expense CSV logs, and outputs structured reconciliation reports and interactive presentation slideshows.
+A template for building [Managed Agents using the Gemini API](https://ai.google.dev/gemini-api/managed-agents). This agent parses raw PDF invoices locally, runs automated matching and discrepancy audits against expense CSV logs, and outputs structured reconciliation reports and interactive presentation slideshows.
 
 ---
 

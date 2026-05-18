@@ -1,6 +1,6 @@
 # Repo Maintainer Template
 
-A template for building [Managed Agents using the Gemini API](TODO). This agent analyzes GitHub repositories. It clones git repositories, analyzes open GitHub issues, implements bug fixes, and exports standardized `.patch` files for review.
+A template for building [Managed Agents using the Gemini API](https://ai.google.dev/gemini-api/managed-agents). This agent analyzes GitHub repositories. It clones git repositories, analyzes open GitHub issues, implements bug fixes, and exports standardized `.patch` files for review.
 
 ---
 

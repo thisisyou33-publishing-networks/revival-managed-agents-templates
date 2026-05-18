@@ -1,6 +1,6 @@
 # Data Analyst Template
 
-A template for building [Managed Agents using the Gemini API](TODO). This agent profiles database schemas, computes statistics, and trains machine learning models on a pre-bootstrapped dataset using Pandas and Scikit-Learn.
+A template for building [Managed Agents using the Gemini API](https://ai.google.dev/gemini-api/managed-agents). This agent profiles database schemas, computes statistics, and trains machine learning models on a pre-bootstrapped dataset using Pandas and Scikit-Learn.
 
 ---
 

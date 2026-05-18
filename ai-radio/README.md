@@ -1,6 +1,6 @@
 # AI Talk Radio Template
 
-A template for [Managed Agents using the Gemini API](TODO). This agent turns a content source, such as Hacker News stories, GitHub repository changelogs, research papers, or a website URL, into a produced radio show by drafting scripts, synthesizing natural-sounding speech with telephonic audio effects, and mixing background ambient music.
+A template for [Managed Agents using the Gemini API](https://ai.google.dev/gemini-api/managed-agents). This agent turns a content source, such as Hacker News stories, GitHub repository changelogs, research papers, or a website URL, into a produced radio show by drafting scripts, synthesizing natural-sounding speech with telephonic audio effects, and mixing background ambient music.
 
 ---
 
