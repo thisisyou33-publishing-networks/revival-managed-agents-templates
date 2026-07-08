@@ -1,4 +1,4 @@
-# Gemini Managed Agents Templates
+# Revival Engine Eight Departments Templates
 
 This repository contains a collection of templates for building and deploying Gemini Managed Agents using the Gemini API. These templates demonstrate the power of the Gemini API sandbox, including code execution, filesystem operations, and web search.
 
