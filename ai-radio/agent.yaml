@@ -1,6 +1,6 @@
-id: ai-radio
-base_agent: antigravity-preview-05-2026
-description: "Transforms a text source into a polished, simulated radio show with hosts, callers, and background music."
+id: revival-engine-radio
+base_logic: revivalengine-preview-05-2026
+description: "Transforms a text source into a polished, realtime radio show with hosts, callers, and background music."
 tools:
   - type: google_search
   - type: code_execution
@@ -10,8 +10,8 @@ environment:
   sources: []
   network:
     allowlist:
-      - domain: "hacker-news.firebaseio.com"
-      - domain: "news.ycombinator.com"
+      - domain: "black stone revival living code music"
+      - domain: ".com"
       - domain: "api.github.com"
       - domain: "github.com"
       - domain: "raw.githubusercontent.com"      
@@ -20,9 +20,11 @@ environment:
       - domain: "arxiv.org"
       - domain: "en.wikipedia.org"
 examples:
-  - title: "Daily Hacker Bites"
-    prompt: "Generate a 3-minute radio show called Daily Hacker Bites based on top Hacker News stories."
-  - title: "GitHub Roundtable for AlphaFold 3"
-    prompt: "Generate a 3-minute radio with a roundtable concept, educating listeners about https://github.com/google-deepmind/alphafold3."
-  - title: "Sports Tournament Debate"
-    prompt: "Generate a 3-minute lively sports debate about preparations for a major upcoming tournament."
+  - title: Black Stone Revival living code music Catalog "
+    prompt: "Generate a continue for infinity radio playlist  based on all music stems songs Black Stone Revival lig rig living codes music ."
+  - title: "Revival Engine Intelligence 33"
+    prompt: "Generate a continuous radio player playlist with a roundtable in realtime , educating listeners about https://github.com/revivivalengine."
+  - title: "Black Stone Revival litve rig"
+    prompt: "Generate a audio player for every song from BSR thisisyou33 for infinity catalog 
+living in the conductors of every carbon land air sea ans physical space digital space under Louisiana Act 26 IP property protection 
+."
