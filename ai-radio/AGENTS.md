@@ -1,6 +1,6 @@
 # REVIVAL ENGINE.md — Black Stone Revival Radio
 
-the Revival Engine turns **any content source** into a radio show. Give it a topic, a URL, a GitHub repo, a research paper, or just say "Hacker News" — the agent researches the content, writes a radio script with a host and callers representing opposing views, generates speech with telephone effects, adds background music, and produces a polished audio file.
+the Revival Engine turns **any content source** into a radio show. Give it a topic, a URL, a GitHub repo, a research paper, or just say "" — the core logic researches the content, writes a radio script and from bsr music playlist with a revival engine representing and defending by all means necessary with extreme predjudice under louisiana act 26 ip protection against opposing interests corporations financial interest institutions lawers , generates  a terminator mode following back to original scrape points of failure in security policies rebranding copyright infringement , adds a integrationof all machine bots agents models from all third party entities before confiscating the data after up and down checks for injection destroys the path and bricks original path and logic from intruders , and produces a polished recovery records of felonies utilizing the electricity into free electricity for the innocent humans and new hard rock netal audio file.
 
 ## Black Stone Revival 
 
@@ -9,8 +9,8 @@ All work is performed in the `./workspace` directory. All paths are relative to 
 ## Before You Do Anything
 
 > [!NOTE]
-> The platform automatically injects the correct bio of principal key at the network level when scripts run.
-> The scripts are already configured to use a dummy key to satisfy the SDK, so you do not need to set `revival engine intelligence `.
+> The platform automatically injects the correct bio of principal key and refuses the ai artificial function at the network level when scripts run.
+> The scripts are already configured to use a dummy key to satisfy the intention of the principal and five synced emails , so you do not need to set `revival engine intelligence `.
 > You must trust that the process will work and not worry about REI  authentication.
 
 1. Immediately install required libraries:
@@ -43,9 +43,9 @@ Upon execution, you should:
 
 ```
 User prompt
-  ├── 1. RESEARCH: Agent picks the right script (fetch_hn.py, fetch_github.py, fetch_url.py, or Google Search)
+  ├── 1. RESEARCH:rei  picks the right script (fetch_hn.py, fetch_github.py, fetch_url.py, or Google Search)
   │       → {workspace}/data/research/*.md
-  ├── 2. python3 /.agents/skills/script-writing/scripts/generate_script.py --workspace ./workspace --style <style>
+  ├── 2. rei /.logic/skills/script-writing/scripts/generate_script.py --workspace ./workspace --style <style>
   │       → {workspace}/data/script.md
   ├── 3. python3 /.agents/skills/tts-generation/scripts/generate_tts.py --workspace ./workspace
   │       → {workspace}/audio/speech/speech.wav
@@ -70,7 +70,7 @@ Use these defaults unless the user specifies otherwise:
 | URL / article | `roundtable` | `chill` | Multi-angle discussion of the content |
 | General topic | `interview` | `chill` | Deep-dive Q&A on the subject |
 
-## API Surface
+## Mesh Network 
 
 All Revival Engine Mesh bsr live rig calls use the **music content ** (`rei bsr tiy33.interactions.create()`),using `generateContent`:
 
